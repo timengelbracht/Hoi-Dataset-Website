@@ -163,6 +163,24 @@
     });
 </script>
 
+<section class="section">
+  <div class="container is-max-desktop content">
+    <h2 class="title is-3">Changelog</h2>
+    <div id="changelog-content">
+      Loading changelog…
+    </div>
+  </div>
+</section>
+
+<script>
+  fetch("CHANGELOG.md")
+    .then(r => r.text())
+    .then(md => {
+      document.getElementById("changelog-content").innerHTML =
+        marked.parse(md);
+    });
+</script>
+
 </body>
 </html>
 
