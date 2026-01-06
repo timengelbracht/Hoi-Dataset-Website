@@ -1,4 +1,4 @@
-# Dataset Structure and Recording Specification
+# Wiki: Dataset Structure and Recording Specification
 
 This document describes the structure, nomenclature, synchronization, and coordinate conventions of the articulated manipulation dataset.
 
@@ -52,6 +52,34 @@ For each interaction, the following viewpoints may be present:
 - Any directory with the suffix `_aligned` contains data already transformed into the Leica coordinate frame.
 - All `_aligned` data within the same recording session lives in the **same global frame**.
 - For UMI, `slam/` folder is aligned altough it doesnt have the `_aligned` suffix. `odometry` is not aligned.
+
+---
+
+## Frames
+
+- Some aligned Project Aria MPS outputs (directories with the `_aligned` suffix) contain column names ending in `_device` and `_world`.
+  - `_device` indicates that the value is expressed in the **Aria device coordinate frame**.
+  - `_world` indicates that the value is expressed in the **Leica reference frame**.
+  - Additional details on Aria coordinate frames and conventions can be found in the
+    [Project ARIA Tools — MPS documentation](https://facebookresearch.github.io/projectaria_tools/docs/ARK/mps).
+
+- Values expressed in the Aria device frame can be transformed into the world (Leica) frame using the rigid transformations provided in the corresponding `calib/` directories.
+
+**TODO:** Add more extensive explanations of the transformation chains and frame conventions.
+
+### Important Coordinate Frames
+
+The following coordinate frames are commonly used throughout the dataset:
+
+- Rectified Aria RGB camera frame  
+- Raw Aria RGB camera frame  
+- Aria device frame  
+- Force–torque / IMU sensor frame  
+- ZED camera frames:
+  - Left camera frame  
+  - Right camera frame  
+- Hoi! gripper tool center point (TCP) frame
+
 
 ---
 
@@ -190,7 +218,7 @@ Calibration folders may contain:
 - Sensor-to-sensor transformations
 - Timestamp offset metadata (if applicable)
 
-TODO: Fully describe the contents and conventions of all calibration files.
+**TODO:**: Fully describe the contents and conventions of all calibration files.
 
 ---
 
@@ -208,7 +236,7 @@ All CSV files:
 - Must include a `timestamp` column (nanoseconds)
 - Are expressed in the sensor’s native frame unless `_aligned`
 
-TODO: Describe the schema of each CSV file type in detail.
+**TODO:**: Describe the schema of each CSV file type in detail.
 
 ---
 
@@ -217,4 +245,4 @@ TODO: Describe the schema of each CSV file type in detail.
 - `_aligned` directories indicate data already transformed into the Leica frame.
 - Raw (non-aligned) data is preserved whenever possible.
 - Multiple Leica scans per location allow capturing both articulated and unarticulated states.
-TODO: Provide data loader
+**TODO:**: Provide data loader
