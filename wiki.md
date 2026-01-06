@@ -1,0 +1,220 @@
+# Dataset Structure and Recording Specification
+
+This document describes the structure, nomenclature, synchronization, and coordinate conventions of the articulated manipulation dataset.
+
+---
+
+## Overview
+
+Each **recording location** (e.g. kitchens, bathrooms, bedrooms) contains multiple **articulated objects** such as drawers, cabinets, dishwashers, etc.
+
+For each location, we record **multiple manipulation schemes** and **multiple viewpoints**, and we additionally capture **laser scans** of both articulated and unarticulated states of the scene. All sensory data is temporally aligned and spatially registered to a common reference frame.
+
+---
+
+## Manipulation Schemes
+
+Each location is recorded with the following **four manipulation schemes**:
+
+1. Hoi! gripper  
+2. Human hand  
+3. Human hand with wrist-mounted camera  
+4. UMI gripper  
+
+For each manipulation scheme, multiple recording modules (sensors) are active simultaneously.
+
+---
+
+## Viewpoints
+
+For each interaction, the following viewpoints may be present:
+
+### Egocentric
+- Project Aria (human mounted)
+
+### Manipulation-centric
+- Wrist-mounted Aria (if applicable)
+- Gripper-mounted Aria (if applicable)
+- UMI-mounted GoPro
+
+### Exocentric
+- 1–2 iPhone RGB-D viewpoints
+
+### Static Reference
+- Leica laser scanner (multiple scans per location)
+
+---
+
+## Spatial Registration
+
+- All recordings are **spatially registered** to a **common reference frame**, defined by the **Leica laser scan**.
+- Registration is performed using visual registration.
+- Any directory with the suffix `_aligned` contains data already transformed into the Leica coordinate frame.
+- All `_aligned` data within the same recording session lives in the **same global frame**.
+- For UMI, `slam/` folder is aligned altough it doesnt have the `_aligned` suffix. `odometry` is not aligned.
+
+---
+
+## Temporal Alignment
+
+- All recording modules within a single recording session are **time-aligned** (not hardware-synchronized).
+- All samples carry a **nanosecond-resolution timestamp**.
+- Different sensors may operate at different frame rates.
+
+---
+
+## File Naming Conventions
+
+### Frame Data
+- Stored as `.jpg`
+- File name format:
+  `<timestamp>.jpg`
+
+### Time-Series Data
+- Stored as `.csv`
+- contains a column named exactely `timestamp`, which carries the aligned timestamp
+- other colums that contain a similar name to time stamp (e.g. remnants of ros messages like header.stamp.nanosec or Aria MPS utc_timestamp_ns) refer to the actually recording timestamp and are NOT aligned. We leave just for completeness.
+
+---
+
+## Directory Structure
+
+```
+<recording_location>/
+├── gripper/
+│   ├── aria_gripper/
+│   │   └── <recording_location>_<interaction_indices>_<recording_type>_vrs/
+│   │       ├── calib/
+│   │       ├── camera_depth/
+│   │       ├── camera_rgb/
+│   │       ├── eye_gaze/
+│   │       ├── handtracking/
+│   │       ├── slam/
+│   │       └── (additional alignment artifacts)
+│   │
+│   ├── aria_human/
+│   │   └── (same structure as aria_gripper)
+│   │
+│   ├── gripper/
+│   │   └── <recording_location>_<interaction_indices>_<recording_type>_bag/
+│   │       ├── calib/
+│   │       ├── digit/
+│   │       ├── dynamixel_workbench/
+│   │       ├── force_torque/
+│   │       ├── gripper_force_trigger/
+│   │       ├── zedm/
+│   │       └── (additional metadata)
+│   │
+│   ├── iphone_1/
+│   │   └── <recording_location>_<interaction_indices>_<recording_type>/
+│   │       ├── camera_depth/
+│   │       ├── camera_rgb/
+│   │       ├── poses/
+│   │       ├── poses_aligned/
+│   │       └── (registration metadata)
+│   │
+│   └── iphone_2/
+│       └── (same structure as iphone_1)
+│   
+├── interaction_splitting_info.json
+│   
+├──hand/
+│  ├── aria_human/
+│  ├── iphone_1/
+│  └── iphone_2/
+│
+├── leica/
+│   └── <setup>/
+│       ├── images/
+│       ├── mesh/
+│       ├── points/
+│       ├── points_downsampled/
+│       └── (registration metadata)
+│
+├── umi/
+│   ├── aria_human/
+│   ├── iphone_1/
+│   ├── iphone_2/
+│   └── umi_gripper/
+│
+└── wrist/
+    ├── aria_human/
+    ├── aria_wrist/
+    ├── iphone_1/
+    └── iphone_2/
+```
+
+---
+
+## Nomenclature
+
+### Recording Location
+`<recording_location> ::= bedroom_1 | bathroom_2 | kitchen_3 | ...`
+
+### Recording Type
+`<recording_type> ::= gripper | hand | wrist | umi`
+
+### Recording Module
+```
+<recording_module> ::= 
+    gripper |
+    umi |
+    aria_human |
+    aria_gripper |
+    aria_wrist |
+    iphone_1 |
+    iphone_2
+```
+
+### Interaction Indices
+`<interaction_indices> ::= 1-6 | 1-4 | 8-16 | 1-3-5-7 | ...`
+
+Interaction indices indicate which articulated interactions are present in a recording session.
+
+---
+
+## Cross-Module Alignment
+
+- All modules belonging to the same `<recording_location>_<interaction_indices>_<recording_type>` share:
+  - A common time base
+  - A common spatial alignment after registration
+- No assumption of strict frame-to-frame synchronization should be made.
+
+---
+
+## Calibration Files (`calib/`)
+
+Calibration folders may contain:
+- Intrinsic camera parameters
+- Camera-to-body extrinsics
+- Sensor-to-sensor transformations
+- Timestamp offset metadata (if applicable)
+
+TODO: Fully describe the contents and conventions of all calibration files.
+
+---
+
+## CSV Files
+
+CSV files may include (non-exhaustive):
+- SLAM trajectories
+- IMU measurements
+- Eye gaze vectors
+- Force–torque readings
+- Motor states
+- Trigger signals
+
+All CSV files:
+- Must include a `timestamp` column (nanoseconds)
+- Are expressed in the sensor’s native frame unless `_aligned`
+
+TODO: Describe the schema of each CSV file type in detail.
+
+---
+
+## Notes
+
+- `_aligned` directories indicate data already transformed into the Leica frame.
+- Raw (non-aligned) data is preserved whenever possible.
+- Multiple Leica scans per location allow capturing both articulated and unarticulated states.
+TODO: Provide data loader
