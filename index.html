@@ -425,18 +425,40 @@ loader.load('./static/InTheWild/Kitchen/Leica/points_voxel_0.010.ply?v=2', (geom
     .then(r => r.json())
     .then(pts => {
       const positions = [];
-      for (const [tx, ty, tz] of pts) {
-        // Apply same centering + scale as point cloud, then rotation.x = -π/2
-        // rotation.x = -π/2: (x,y,z) → (x, z, -y)
+      const colors = [];
+      const colorStart = new THREE.Color(0xE87461);
+      const colorEnd   = new THREE.Color(0x4488ff);
+      const total = Math.ceil(pts.length / 10);
+      let count = 0;
+      for (let i = 0; i < pts.length; i += 10) {
+        const [tx, ty, tz] = pts[i];
         const x = (tx - center.x) * scale;
         const y = (ty - center.y) * scale;
         const z = (tz - center.z) * scale;
         positions.push(x, z, -y);
+        const c = colorStart.clone().lerp(colorEnd, count / Math.max(total - 1, 1));
+        colors.push(c.r, c.g, c.b);
+        count++;
       }
       const dotGeo = new THREE.BufferGeometry();
       dotGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(positions), 3));
+      dotGeo.setAttribute('color',    new THREE.BufferAttribute(new Float32Array(colors), 3));
+      const diamondCanvas = document.createElement('canvas');
+      diamondCanvas.width = diamondCanvas.height = 64;
+      const dctx = diamondCanvas.getContext('2d');
+      dctx.beginPath();
+      dctx.moveTo(32,  0);
+      dctx.lineTo(64, 32);
+      dctx.lineTo(32, 64);
+      dctx.lineTo( 0, 32);
+      dctx.closePath();
+      dctx.fillStyle = '#fff';
+      dctx.fill();
+      const diamondTex = new THREE.CanvasTexture(diamondCanvas);
+
       const dotMat = new THREE.PointsMaterial({
-        color: 0xE87461, size: 0.045,
+        vertexColors: true, size: 0.07,
+        map: diamondTex, alphaTest: 0.5,
         sizeAttenuation: true,
         transparent: true, opacity: 0,
       });
