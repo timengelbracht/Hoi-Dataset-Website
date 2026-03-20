@@ -108,7 +108,7 @@
         <a href="https://zuriabauer.com/">Zuria Bauer</a><sup>1</sup>
       </div>
       <div class="affiliations">
-        <sup>1</sup>ETH Zurich · <sup>2</sup>TU Munich · <sup>3</sup>Uni Freiburg · <sup>4</sup>Microsoft · <sup>5</sup>Uni Bonn
+        <sup>1</sup>ETH Zurich · <sup>2</sup>TU Munich · <sup>3</sup>U. Freiburg · <sup>4</sup>Microsoft · <sup>5</sup>U. Bonn
       </div>
 
       <div class="btn-row">
@@ -332,10 +332,10 @@
   <!-- AFFILIATIONS -->
   <section class="section" id="affiliations">
     <div class="affil-logos">
-      <img src="./static/images/ETH_Zurich.png" alt="ETH Zurich">
+      <img src="./static/images/ETH_Zürich.png" alt="ETH Zurich">
       <img src="./static/images/tum.svg" alt="TU Munich">
       <img src="./static/images/UFR.png" alt="University of Freiburg">
-      <img src="./static/images/Universitat_Bonn.png" alt="University of Bonn">
+      <img src="./static/images/Universität_Bonn.png" alt="University of Bonn">
       <img src="./static/images/microsoft.webp" alt="Microsoft">
     </div>
   </section>
@@ -351,9 +351,6 @@
 <script type="module">
 import * as THREE from 'three';
 import { PLYLoader } from 'three/addons/loaders/PLYLoader.js';
-import { Line2 } from 'three/addons/lines/Line2.js';
-import { LineGeometry } from 'three/addons/lines/LineGeometry.js';
-import { LineMaterial } from 'three/addons/lines/LineMaterial.js';
 
 const overlay  = document.getElementById('intro-overlay');
 const canvas   = document.getElementById('intro-canvas');
@@ -363,7 +360,7 @@ const skipBtn  = document.getElementById('intro-skip');
 document.body.style.overflow = 'hidden';
 
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-renderer.setPixelRatio(window.devicePixelRatio);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
 renderer.localClippingEnabled = true;
 
 const scene = new THREE.Scene();
@@ -436,21 +433,17 @@ loader.load('./static/InTheWild/Kitchen/Leica/points_voxel_0.010.ply?v=2', (geom
         const z = (tz - center.z) * scale;
         positions.push(x, z, -y);
       }
-      const geo = new LineGeometry();
-      geo.setPositions(positions);
-      const lineMat = new LineMaterial({
-        color: 0xE87461, linewidth: 4,
+      const dotGeo = new THREE.BufferGeometry();
+      dotGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(positions), 3));
+      const dotMat = new THREE.PointsMaterial({
+        color: 0xE87461, size: 0.045,
+        sizeAttenuation: true,
         transparent: true, opacity: 0,
-        resolution: new THREE.Vector2(window.innerWidth, window.innerHeight),
       });
-      window.addEventListener('resize', () => {
-        lineMat.resolution.set(window.innerWidth, window.innerHeight);
-      });
-      const line = new Line2(geo, lineMat);
-      line.computeLineDistances();
-      scene.add(line);
+      const dots = new THREE.Points(dotGeo, dotMat);
+      scene.add(dots);
 
-      scene._trajMat = lineMat;
+      scene._trajMat = dotMat;
     });
 
   const startAngle = Math.PI / 10;
