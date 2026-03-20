@@ -199,13 +199,13 @@
     </div>
 
     <!-- Stats + Forces (side by side) -->
-    <div class="fig-grid fig-half" style="margin-top:1.5rem;">
+    <div class="fig-grid fig-half" style="margin-top:1.5rem; align-items:start;">
       <div class="fig-card">
-        <img src="./static/images/HoiStats.png" alt="Dataset statistics" loading="lazy">
+        <img src="./static/images/HoiStats.png" alt="Dataset statistics" loading="lazy" style="height:280px;object-fit:contain;background:#fff;">
         <div class="fig-cap"><strong>Dataset Statistics.</strong> Distribution of environments and articulated interaction categories in the Hoi! dataset.</div>
       </div>
       <div class="fig-card">
-        <img src="./static/images/forces_figure.png" alt="Force profiles" loading="lazy">
+        <img src="./static/images/forces_figure.png" alt="Force profiles" loading="lazy" style="height:280px;object-fit:contain;background:#fff;">
         <div class="fig-cap"><strong>Force Profiles.</strong> Force/torque measurements during articulated object manipulation.</div>
       </div>
     </div>
@@ -462,10 +462,13 @@ loader.load('./static/InTheWild/Kitchen/Leica/points_voxel_0.010.ply?v=2', (geom
         sizeAttenuation: true,
         transparent: true, opacity: 0,
       });
+      dotGeo.setDrawRange(0, 0);
       const dots = new THREE.Points(dotGeo, dotMat);
       scene.add(dots);
 
-      scene._trajMat = dotMat;
+      scene._trajMat  = dotMat;
+      scene._trajDots = dots;
+      scene._trajTotal = Math.ceil(pts.length / 10);
     });
 
   const startAngle = Math.PI / 10;
@@ -480,9 +483,15 @@ loader.load('./static/InTheWild/Kitchen/Leica/points_voxel_0.010.ply?v=2', (geom
     const elapsed = performance.now() - startTime;
     const t = elapsed / 1000;
 
-    // Fade point cloud + trajectory in over first 0.8s
+    // Fade point cloud in over first 0.8s
     mat.opacity = Math.min(1, t / 0.8);
-    if (scene._trajMat) scene._trajMat.opacity = Math.min(1, t / 0.8);
+
+    // Reveal trajectory dots gradually from 0.8s to 3.0s
+    if (scene._trajMat) {
+      scene._trajMat.opacity = 1;
+      const revealProgress = Math.min(1, t / 3.0);
+      scene._trajDots.geometry.setDrawRange(0, Math.floor(revealProgress * scene._trajTotal));
+    }
 
     // Slow orbit + gentle dolly
     const radius = 2.5 - t * 0.05;
@@ -571,7 +580,7 @@ function loadPLY(url, sceneName) {
     });
     const obj = new THREE.Points(geometry, mat);
     obj.rotation.x = -Math.PI / 2;
-    if (sceneName === 'Bathroom') obj.rotation.z = -45 * Math.PI / 180;
+    if (sceneName === 'Bathroom') { obj.rotation.z = 70 * Math.PI / 180; obj.rotation.x = -Math.PI / 2; }
     if (sceneName === 'Bedroom') obj.rotation.z = 45 * Math.PI / 180;
     obj.scale.setScalar(scale);
     scene.add(obj);
@@ -583,8 +592,8 @@ function loadPLY(url, sceneName) {
       controls.target.set(0, 0, 0);
       camera.position.set(0, 3, 0.5);
     } else if (sceneName === 'Bathroom') {
-      controls.target.set(-1.6, 0, 0);
-      camera.position.set(-1.409, 0, 0.84);
+      controls.target.set(0.5, 0, 0);
+      camera.position.set(1.0, 2.0, 3.5);
     } else {
       controls.target.set(0, 0, 0);
       camera.position.set(0, 0, 2);
@@ -594,7 +603,7 @@ function loadPLY(url, sceneName) {
 }
 
 const plyPaths = {
-  Bathroom: './static/InTheWild/Bathroom/Laica/points_voxel_0.010.ply?v=2',
+  Bathroom: './static/InTheWild/Bathroom/Laica/points_voxel_0.010.ply?v=3',
   Bedroom:  './static/InTheWild/Bedroom/Leica/points_voxel_0.010.ply?v=2',
   Kitchen:  './static/InTheWild/Kitchen/Leica/points_voxel_0.010.ply?v=2',
 };
