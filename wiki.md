@@ -16,10 +16,10 @@ For each location, we record **multiple manipulation schemes** and **multiple vi
 
 Each location is recorded with the following **four manipulation schemes**:
 
-1. Hoi! gripper  
-2. Human hand  
-3. Human hand with wrist-mounted camera  
-4. UMI gripper  
+1. Hoi! gripper
+2. Human hand
+3. Human hand with wrist-mounted camera
+4. UMI gripper
 
 For each manipulation scheme, multiple recording modules (sensors) are active simultaneously.
 
@@ -51,7 +51,7 @@ For each interaction, the following viewpoints may be present:
 - Registration is performed using visual registration.
 - Any directory with the suffix `_aligned` contains data already transformed into the Leica coordinate frame.
 - All `_aligned` data within the same recording session lives in the **same global frame**.
-- For UMI, `slam/` folder is aligned altough it doesnt have the `_aligned` suffix. `odometry` is not aligned.
+- For UMI, `slam/` folder is aligned although it doesn't have the `_aligned` suffix. `odometry` is not aligned.
 
 ---
 
@@ -71,15 +71,14 @@ For each interaction, the following viewpoints may be present:
 
 The following coordinate frames are commonly used throughout the dataset:
 
-- Rectified Aria RGB camera frame  
-- Raw Aria RGB camera frame  
-- Aria device frame  
-- Force–torque / IMU sensor frame  
+- Rectified Aria RGB camera frame
+- Raw Aria RGB camera frame
+- Aria device frame
+- Force–torque / IMU sensor frame
 - ZED camera frames:
-  - Left camera frame  
-  - Right camera frame  
+  - Left camera frame
+  - Right camera frame
 - Hoi! gripper tool center point (TCP) frame
-
 
 ---
 
@@ -95,13 +94,12 @@ The following coordinate frames are commonly used throughout the dataset:
 
 ### Frame Data
 - Stored as `.jpg`
-- File name format:
-  `<timestamp>.jpg`
+- File name format: `<timestamp>.jpg`
 
 ### Time-Series Data
 - Stored as `.csv`
-- contains a column named exactely `timestamp`, which carries the aligned timestamp
-- other colums that contain a similar name to time stamp (e.g. remnants of ros messages like header.stamp.nanosec or Aria MPS utc_timestamp_ns) refer to the actually recording timestamp and are NOT aligned. We leave just for completeness.
+- Contains a column named exactly `timestamp`, which carries the aligned timestamp.
+- Other columns that contain a similar name to timestamp (e.g. remnants of ROS messages like `header.stamp.nanosec` or Aria MPS `utc_timestamp_ns`) refer to the actual recording timestamp and are **NOT** aligned. Left for completeness only.
 
 ---
 
@@ -143,13 +141,13 @@ The following coordinate frames are commonly used throughout the dataset:
 │   │
 │   └── iphone_2/
 │       └── (same structure as iphone_1)
-│   
+│
 ├── interaction_splitting_info.json
-│   
-├──hand/
-│  ├── aria_human/
-│  ├── iphone_1/
-│  └── iphone_2/
+│
+├── hand/
+│   ├── aria_human/
+│   ├── iphone_1/
+│   └── iphone_2/
 │
 ├── leica/
 │   └── <setup>/
@@ -184,7 +182,7 @@ The following coordinate frames are commonly used throughout the dataset:
 
 ### Recording Module
 ```
-<recording_module> ::= 
+<recording_module> ::=
     gripper |
     umi |
     aria_human |
@@ -218,7 +216,7 @@ Calibration folders may contain:
 - Sensor-to-sensor transformations
 - Timestamp offset metadata (if applicable)
 
-**TODO:**: Fully describe the contents and conventions of all calibration files.
+**TODO:** Fully describe the contents and conventions of all calibration files.
 
 ---
 
@@ -234,9 +232,9 @@ CSV files may include (non-exhaustive):
 
 All CSV files:
 - Must include a `timestamp` column (nanoseconds)
-- Are expressed in the sensor’s native frame unless `_aligned`
+- Are expressed in the sensor's native frame unless `_aligned`
 
-**TODO:**: Describe the schema of each CSV file type in detail.
+**TODO:** Describe the schema of each CSV file type in detail.
 
 ---
 
@@ -245,4 +243,5 @@ All CSV files:
 - `_aligned` directories indicate data already transformed into the Leica frame.
 - Raw (non-aligned) data is preserved whenever possible.
 - Multiple Leica scans per location allow capturing both articulated and unarticulated states.
-**TODO:**: Provide data loader
+
+**TODO:** Provide data loader

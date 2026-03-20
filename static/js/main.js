@@ -1,0 +1,372 @@
+/**
+ * Hoi! Dataset Website — Main JavaScript
+ * Handles: sidebar scroll tracking, documentation loading, video visualizer
+ */
+
+// ===== Sidebar Scroll Tracking =====
+(function initSidebar() {
+  const sections = document.querySelectorAll('section[id], .hero[id]');
+  const navLinks = document.querySelectorAll('.sidebar nav a');
+
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(section => {
+      if (window.scrollY >= section.offsetTop - 120) {
+        current = section.id;
+      }
+    });
+    navLinks.forEach(link => {
+      link.classList.toggle('active', link.getAttribute('href') === '#' + current);
+    });
+  });
+})();
+
+// ===== Sidebar Mobile Toggle =====
+(function initSidebarToggle() {
+  const toggleBtn = document.querySelector('.sidebar-toggle');
+  if (toggleBtn) {
+    toggleBtn.addEventListener('click', () => {
+      document.querySelector('.sidebar').classList.toggle('open');
+    });
+  }
+})();
+
+// ===== Documentation Loading =====
+(function initDocs() {
+  const docsEl = document.getElementById('docs-content');
+  if (!docsEl) return;
+
+  const wikiMd = `# Wiki: Dataset Structure and Recording Specification
+
+This document describes the structure, nomenclature, synchronization, and coordinate conventions of the articulated manipulation dataset.
+
+---
+
+## Overview
+
+Each **recording location** (e.g. kitchens, bathrooms, bedrooms) contains multiple **articulated objects** such as drawers, cabinets, dishwashers, etc.
+
+For each location, we record **multiple manipulation schemes** and **multiple viewpoints**, and we additionally capture **laser scans** of both articulated and unarticulated states of the scene. All sensory data is temporally aligned and spatially registered to a common reference frame.
+
+---
+
+## Manipulation Schemes
+
+Each location is recorded with the following **four manipulation schemes**:
+
+1. Hoi! gripper
+2. Human hand
+3. Human hand with wrist-mounted camera
+4. UMI gripper
+
+For each manipulation scheme, multiple recording modules (sensors) are active simultaneously.
+
+---
+
+## Viewpoints
+
+For each interaction, the following viewpoints may be present:
+
+### Egocentric
+- Project Aria (human mounted)
+
+### Manipulation-centric
+- Wrist-mounted Aria (if applicable)
+- Gripper-mounted Aria (if applicable)
+- UMI-mounted GoPro
+
+### Exocentric
+- 1–2 iPhone RGB-D viewpoints
+
+### Static Reference
+- Leica laser scanner (multiple scans per location)
+
+---
+
+## Spatial Registration
+
+- All recordings are **spatially registered** to a **common reference frame**, defined by the **Leica laser scan**.
+- Registration is performed using visual registration.
+- Any directory with the suffix \`_aligned\` contains data already transformed into the Leica coordinate frame.
+- All \`_aligned\` data within the same recording session lives in the **same global frame**.
+- For UMI, \`slam/\` folder is aligned although it doesn't have the \`_aligned\` suffix. \`odometry\` is not aligned.
+
+---
+
+## Frames
+
+- Some aligned Project Aria MPS outputs (directories with the \`_aligned\` suffix) contain column names ending in \`_device\` and \`_world\`.
+  - \`_device\` indicates that the value is expressed in the **Aria device coordinate frame**.
+  - \`_world\` indicates that the value is expressed in the **Leica reference frame**.
+  - Additional details on Aria coordinate frames and conventions can be found in the [Project ARIA Tools — MPS documentation](https://facebookresearch.github.io/projectaria_tools/docs/ARK/mps).
+
+- Values expressed in the Aria device frame can be transformed into the world (Leica) frame using the rigid transformations provided in the corresponding \`calib/\` directories.
+
+**TODO:** Add more extensive explanations of the transformation chains and frame conventions.
+
+### Important Coordinate Frames
+
+The following coordinate frames are commonly used throughout the dataset:
+
+- Rectified Aria RGB camera frame
+- Raw Aria RGB camera frame
+- Aria device frame
+- Force–torque / IMU sensor frame
+- ZED camera frames:
+  - Left camera frame
+  - Right camera frame
+- Hoi! gripper tool center point (TCP) frame
+
+---
+
+## Temporal Alignment
+
+- All recording modules within a single recording session are **time-aligned** (not hardware-synchronized).
+- All samples carry a **nanosecond-resolution timestamp**.
+- Different sensors may operate at different frame rates.
+
+---
+
+## File Naming Conventions
+
+### Frame Data
+- Stored as \`.jpg\`
+- File name format: \`<timestamp>.jpg\`
+
+### Time-Series Data
+- Stored as \`.csv\`
+- Contains a column named exactly \`timestamp\`, which carries the aligned timestamp.
+- Other columns that contain a similar name to timestamp (e.g. remnants of ROS messages like \`header.stamp.nanosec\` or Aria MPS \`utc_timestamp_ns\`) refer to the actual recording timestamp and are **NOT** aligned. Left for completeness only.
+
+---
+
+## Directory Structure
+
+\`\`\`
+<recording_location>/
+├── gripper/
+│   ├── aria_gripper/
+│   │   └── <recording_location>_<interaction_indices>_<recording_type>_vrs/
+│   │       ├── calib/
+│   │       ├── camera_depth/
+│   │       ├── camera_rgb/
+│   │       ├── eye_gaze/
+│   │       ├── handtracking/
+│   │       ├── slam/
+│   │       └── (additional alignment artifacts)
+│   │
+│   ├── aria_human/
+│   │   └── (same structure as aria_gripper)
+│   │
+│   ├── gripper/
+│   │   └── <recording_location>_<interaction_indices>_<recording_type>_bag/
+│   │       ├── calib/
+│   │       ├── digit/
+│   │       ├── dynamixel_workbench/
+│   │       ├── force_torque/
+│   │       ├── gripper_force_trigger/
+│   │       ├── zedm/
+│   │       └── (additional metadata)
+│   │
+│   ├── iphone_1/
+│   │   └── <recording_location>_<interaction_indices>_<recording_type>/
+│   │       ├── camera_depth/
+│   │       ├── camera_rgb/
+│   │       ├── poses/
+│   │       ├── poses_aligned/
+│   │       └── (registration metadata)
+│   │
+│   └── iphone_2/
+│       └── (same structure as iphone_1)
+│
+├── interaction_splitting_info.json
+│
+├── hand/
+│   ├── aria_human/
+│   ├── iphone_1/
+│   └── iphone_2/
+│
+├── leica/
+│   └── <setup>/
+│       ├── images/
+│       ├── mesh/
+│       ├── points/
+│       ├── points_downsampled/
+│       └── (registration metadata)
+│
+├── umi/
+│   ├── aria_human/
+│   ├── iphone_1/
+│   ├── iphone_2/
+│   └── umi_gripper/
+│
+└── wrist/
+    ├── aria_human/
+    ├── aria_wrist/
+    ├── iphone_1/
+    └── iphone_2/
+\`\`\`
+
+---
+
+## Nomenclature
+
+### Recording Location
+\`<recording_location> ::= bedroom_1 | bathroom_2 | kitchen_3 | ...\`
+
+### Recording Type
+\`<recording_type> ::= gripper | hand | wrist | umi\`
+
+### Recording Module
+\`\`\`
+<recording_module> ::=
+    gripper |
+    umi |
+    aria_human |
+    aria_gripper |
+    aria_wrist |
+    iphone_1 |
+    iphone_2
+\`\`\`
+
+### Interaction Indices
+\`<interaction_indices> ::= 1-6 | 1-4 | 8-16 | 1-3-5-7 | ...\`
+
+Interaction indices indicate which articulated interactions are present in a recording session.
+
+---
+
+## Cross-Module Alignment
+
+- All modules belonging to the same \`<recording_location>_<interaction_indices>_<recording_type>\` share:
+  - A common time base
+  - A common spatial alignment after registration
+- No assumption of strict frame-to-frame synchronization should be made.
+
+---
+
+## Calibration Files (\`calib/\`)
+
+Calibration folders may contain:
+- Intrinsic camera parameters
+- Camera-to-body extrinsics
+- Sensor-to-sensor transformations
+- Timestamp offset metadata (if applicable)
+
+**TODO:** Fully describe the contents and conventions of all calibration files.
+
+---
+
+## CSV Files
+
+CSV files may include (non-exhaustive):
+- SLAM trajectories
+- IMU measurements
+- Eye gaze vectors
+- Force–torque readings
+- Motor states
+- Trigger signals
+
+All CSV files:
+- Must include a \`timestamp\` column (nanoseconds)
+- Are expressed in the sensor's native frame unless \`_aligned\`
+
+**TODO:** Describe the schema of each CSV file type in detail.
+
+---
+
+## Notes
+
+- \`_aligned\` directories indicate data already transformed into the Leica frame.
+- Raw (non-aligned) data is preserved whenever possible.
+- Multiple Leica scans per location allow capturing both articulated and unarticulated states.
+
+**TODO:** Provide data loader`;
+
+  docsEl.innerHTML = marked.parse(wikiMd);
+})();
+
+// ===== Sensor Image Slideshows =====
+(function initSlideshows() {
+  const sceneData = {
+    Bathroom: {
+      basePath: './static/InTheWild/Bathroom/',
+      Hand:       ['2000951774137.jpg','2001851627337.jpg','2002751493800.jpg','2003651350262.jpg','2004551197675.jpg','2005451054125.jpg','2006350910587.jpg','2007250772675.jpg','2008150620925.jpg','2009050482512.jpg','2009950339962.jpg','2010850243387.jpg','2011750055387.jpg','2012649912337.jpg','2013549761337.jpg','2014449618337.jpg','2015349471425.jpg','2016249329675.jpg','2017149185637.jpg','2018049035837.jpg','2018948894137.jpg','2019848765962.jpg','2020748613337.jpg','2021648466925.jpg','2022548319212.jpg','2023448174550.jpg','2024348035137.jpg','2025247896500.jpg','2026147748887.jpg','2027047608337.jpg','2027947458962.jpg','2028847308587.jpg','2029747167462.jpg','2030647023925.jpg','2031546905212.jpg','2032446737262.jpg','2033346590750.jpg','2034246452500.jpg','2035146307587.jpg','2036046157675.jpg','2036946019212.jpg','2037845875675.jpg','2038745726512.jpg','2039645590925.jpg','2040545446675.jpg','2041445299587.jpg','2042345156050.jpg','2043245010262.jpg','2044144868337.jpg','2045044718425.jpg','2045944572712.jpg','2046844429175.jpg','2047744289550.jpg','2048644143262.jpg','2049543998425.jpg','2050443859175.jpg','2051343706837.jpg','2052243568262.jpg','2053143426512.jpg','2054043284550.jpg','2054943136887.jpg','2055842998012.jpg','2056742848425.jpg','2057642704887.jpg','2058542563637.jpg','2059442417875.jpg','2060342268712.jpg','2061242123675.jpg','2062141982050.jpg','2063041846387.jpg','2063941703675.jpg','2064841554800.jpg','2065741409012.jpg','2066641261962.jpg','2067541118425.jpg','2068440981375.jpg','2069340832512.jpg','2070240693887.jpg','2071140548637.jpg','2072040400512.jpg','2072940253262.jpg','2073840107675.jpg','2074739968625.jpg','2075639824137.jpg','2076539689262.jpg','2077439539500.jpg','2078339399212.jpg','2079239245875.jpg','2080139106050.jpg','2081038962212.jpg','2081938813337.jpg','2082838675212.jpg','2083738529675.jpg','2084638382837.jpg','2085538248137.jpg','2086438098550.jpg','2087337950262.jpg','2088237810137.jpg','2089137667637.jpg','2090037520587.jpg'],
+      HoiGripper: ['1400296585762.jpg','1401896333349.jpg','1403496081099.jpg','1405095816312.jpg','1406695563812.jpg','1408295313187.jpg','1409895054224.jpg','1411494793599.jpg','1413094543937.jpg','1414694286937.jpg','1416294025349.jpg','1417893768812.jpg','1419493513224.jpg','1421093261762.jpg','1422693005437.jpg','1424292747812.jpg','1425892494474.jpg','1427492239062.jpg','1429091981437.jpg','1430691721974.jpg','1432291463762.jpg','1433891210599.jpg','1435490959724.jpg','1437090701762.jpg','1438690439562.jpg','1440290187599.jpg','1441889928224.jpg','1443489673262.jpg','1445089424062.jpg','1446689161349.jpg','1448288909937.jpg','1449888649437.jpg','1451488394762.jpg','1453088142512.jpg','1454687879762.jpg','1456287635012.jpg','1457887368762.jpg','1459487117887.jpg','1461086857224.jpg','1462686609312.jpg','1464286344474.jpg','1465886095774.jpg','1467485831387.jpg','1469085584062.jpg','1470685330062.jpg','1472285074762.jpg','1473884812849.jpg','1475484556437.jpg','1477084305937.jpg','1478684045224.jpg','1480283789474.jpg','1481883534812.jpg','1483483278224.jpg','1485083016562.jpg','1486682763562.jpg','1488282505062.jpg','1489882250387.jpg','1491481997637.jpg','1493081741562.jpg','1494681486387.jpg','1496281229312.jpg','1497880968062.jpg','1499480721062.jpg','1501080465762.jpg','1502680198849.jpg','1504279950687.jpg','1505879692637.jpg','1507479440262.jpg','1509079178099.jpg','1510678923312.jpg','1512278671349.jpg','1513878412512.jpg','1515478154137.jpg','1517077900262.jpg','1518677643062.jpg','1520277392099.jpg','1521877128724.jpg','1523476873937.jpg','1525076622887.jpg','1526676365387.jpg','1528276105474.jpg','1529875849637.jpg','1531475596899.jpg','1533075340224.jpg','1534675088012.jpg','1536274827262.jpg','1537874565387.jpg','1539474314099.jpg','1541074056562.jpg','1542673810812.jpg','1544273548262.jpg','1545873291762.jpg','1547473037312.jpg','1549072782637.jpg','1550672521437.jpg','1552272267887.jpg','1553872014524.jpg','1555471755887.jpg','1557071502724.jpg','1558671246062.jpg'],
+      Exocentric: ['2000983074384.jpg','2001883380467.jpg','2002783686467.jpg','2003683992260.jpg','2004584298302.jpg','2005484604385.jpg','2006384910217.jpg','2007285216427.jpg','2008185522510.jpg','2009085828467.jpg','2009986134593.jpg','2010886440509.jpg','2011786746634.jpg','2012687052802.jpg','2013587358927.jpg','2014487665010.jpg','2015387970968.jpg','2016288277177.jpg','2017188583426.jpg','2018088889509.jpg','2018989195760.jpg','2019889501843.jpg','2020789808051.jpg','2021690114260.jpg','2022590420427.jpg','2023490726635.jpg','2024391032718.jpg','2025291338967.jpg','2026191645342.jpg','2027091951467.jpg','2027992257718.jpg','2028892564009.jpg','2029792870260.jpg','2030693176551.jpg','2031593482842.jpg','2032493789052.jpg','2033394095384.jpg','2034294401801.jpg','2035194708177.jpg','2036095014384.jpg','2036995320843.jpg','2037895627177.jpg','2038795933760.jpg','2039696240051.jpg','2040596546468.jpg','2041496853052.jpg','2042397159385.jpg','2043297465927.jpg','2044197772259.jpg','2045098078801.jpg','2045998385426.jpg','2046898691843.jpg','2047798998467.jpg','2048699305009.jpg','2049599611592.jpg','2050499918217.jpg','2051400224717.jpg','2052300531343.jpg','2053200837927.jpg','2054101144510.jpg','2055001451093.jpg','2055901757801.jpg','2056802064427.jpg','2057702371093.jpg','2058602677801.jpg','2059502984509.jpg','2060403291177.jpg','2061303597760.jpg','2062203904551.jpg','2063104211302.jpg','2064004517885.jpg','2064904824551.jpg','2065805131302.jpg','2066705438051.jpg','2067605744759.jpg','2068506051427.jpg','2069406358176.jpg','2070306664884.jpg','2071206971635.jpg','2072107278384.jpg','2073007584967.jpg','2073907891677.jpg','2074808198509.jpg','2075708505177.jpg','2076608811926.jpg','2077509118592.jpg','2078409425509.jpg','2079309732218.jpg','2080210038927.jpg','2081110345802.jpg','2082010652510.jpg','2082910959217.jpg','2083811266052.jpg','2084711572759.jpg','2085611879635.jpg','2086512186301.jpg','2087412493052.jpg','2088312799842.jpg','2089213106593.jpg','2090113413426.jpg'],
+      UMI:        ['947600884300.jpg','948067474337.jpg','948534074500.jpg','949000658875.jpg','949467251875.jpg','949933845750.jpg','950400435675.jpg','950867032250.jpg','951333626837.jpg','951800223000.jpg','952266802800.jpg','952733396550.jpg','953199989375.jpg','953666582837.jpg','954133173175.jpg','954599774300.jpg','955066364300.jpg','955532951587.jpg','955999540000.jpg','956466136875.jpg','956932721050.jpg','957399316250.jpg','957865907212.jpg','958332502000.jpg','958799049462.jpg','959265691712.jpg','959732282675.jpg','960198871087.jpg','960665468462.jpg','961132052625.jpg','961598644800.jpg','962065234837.jpg','962531828587.jpg','962998421175.jpg','963465018300.jpg','963931606675.jpg','964398200550.jpg','964864807212.jpg','965331387550.jpg','965797973000.jpg','966264564212.jpg','966731157625.jpg','967197754300.jpg','967664342675.jpg','968130936750.jpg','968597524837.jpg','969064119837.jpg','969530704837.jpg','969997302050.jpg','970463903087.jpg','970930482050.jpg','971397081800.jpg','971863665800.jpg','972330258462.jpg','972796848050.jpg','973263443962.jpg','973730033875.jpg','974196636000.jpg','974663216925.jpg','975129810675.jpg','975596414087.jpg','976062994625.jpg','976529594250.jpg','976996184087.jpg','977462777500.jpg','977929367550.jpg','978395954587.jpg','978862552675.jpg','979329146462.jpg','979795736462.jpg','980262325550.jpg','980728912375.jpg','981195508175.jpg','981662101837.jpg','982128694837.jpg','982595282300.jpg','983061879800.jpg','983528470800.jpg','983995058050.jpg','984461651837.jpg','984928288337.jpg','985394837837.jpg','985861433675.jpg','986328020875.jpg','986794611925.jpg','987261212462.jpg','987727798375.jpg','988194390962.jpg','988660980962.jpg','989127579750.jpg','989594164550.jpg','990060758300.jpg','990527348337.jpg','990993939625.jpg','991460537125.jpg','991927119837.jpg','992393718500.jpg','992860308300.jpg','993326907550.jpg','993793493675.jpg'],
+    },
+    Bedroom: {
+      basePath: './static/InTheWild/Bedroom/',
+      Hand:       ['806164452125.jpg','806697700537.jpg','807230948950.jpg','807764197375.jpg','808297445787.jpg','808830694162.jpg','809363942575.jpg','809897191000.jpg','810430435662.jpg','810963684075.jpg','811496932500.jpg','812030180912.jpg','812563429325.jpg','813096677575.jpg','813629931250.jpg','814163173000.jpg','814696422950.jpg','815229667625.jpg','815762916037.jpg','816296169000.jpg','816829415537.jpg','817362663825.jpg','817895913662.jpg','818429161500.jpg','818962413825.jpg','819495660950.jpg','820028901700.jpg','820562176037.jpg','821095397662.jpg','821628650075.jpg','822161898700.jpg','822695142162.jpg','823228394037.jpg','823761644287.jpg','824294890912.jpg','824828134625.jpg','825361379950.jpg','825894628375.jpg','826427876750.jpg','826961051162.jpg','827494380625.jpg','828027628037.jpg','828560874575.jpg','829094124575.jpg','829627367825.jpg','830160616875.jpg','830693886787.jpg','831227109125.jpg','831760356750.jpg','832293607787.jpg','832826853950.jpg','833360102037.jpg','833893351950.jpg','834426601662.jpg','834959839750.jpg','835493095662.jpg','836026348450.jpg','836559590912.jpg','837092841625.jpg','837626086625.jpg','838159335287.jpg','838692585575.jpg','839225834700.jpg','839759076412.jpg','840292328075.jpg','840825576625.jpg','841358825787.jpg','841892028250.jpg','842425317825.jpg','842958455450.jpg','843491823575.jpg','844025063075.jpg','844558307750.jpg','845091556162.jpg','845624804575.jpg','846158053000.jpg','846691301375.jpg','847224549537.jpg','847757803037.jpg','848291045287.jpg','848824295250.jpg','849357545200.jpg','849890791950.jpg','850424038037.jpg','850957286037.jpg','851490540700.jpg','852023787825.jpg','852557039875.jpg','853090281325.jpg','853623523537.jpg','854156770625.jpg','854690017125.jpg','855223274375.jpg','855756516825.jpg','856289767200.jpg','856823019000.jpg','857356266000.jpg','857889509375.jpg','858422768912.jpg','858956011787.jpg'],
+      HoiGripper: ['3332414987725.jpg','3333481482975.jpg','3334547973525.jpg','3335614471562.jpg','3336680972350.jpg','3337747465525.jpg','3338813968225.jpg','3339880456100.jpg','3340946950900.jpg','3342013449100.jpg','3343079943850.jpg','3344146440687.jpg','3345212933775.jpg','3346279430600.jpg','3347345927400.jpg','3348412424225.jpg','3349478928475.jpg','3350545414150.jpg','3351611910937.jpg','3352678407775.jpg','3353744902600.jpg','3354811464187.jpg','3355877895400.jpg','3356944400475.jpg','3358010888150.jpg','3359077384937.jpg','3360143878025.jpg','3361210374850.jpg','3362276871687.jpg','3363343369025.jpg','3364409865850.jpg','3365476356437.jpg','3366542860437.jpg','3367609354600.jpg','3368675847687.jpg','3369742343400.jpg','3370808841975.jpg','3371875338775.jpg','3372941835600.jpg','3374008329225.jpg','3375074822312.jpg','3376141319100.jpg','3377207817600.jpg','3378274324900.jpg','3379340810437.jpg','3380407301525.jpg','3381473810650.jpg','3382540296312.jpg','3383606793100.jpg','3384673286187.jpg','3385739783025.jpg','3386806303900.jpg','3387872780687.jpg','3388939266900.jpg','3390005772475.jpg','3391072268650.jpg','3392138767187.jpg','3393205260725.jpg','3394271756350.jpg','3395338247350.jpg','3396404743187.jpg','3397471244975.jpg','3398537737850.jpg','3399604231150.jpg','3400670731150.jpg','3401737225687.jpg','3402803726100.jpg','3403870219937.jpg','3404936712600.jpg','3406003207275.jpg','3407069708562.jpg','3408136205562.jpg','3409202699725.jpg','3410269195312.jpg','3411335692225.jpg','3412402184812.jpg','3413468683687.jpg','3414535260225.jpg','3415601679100.jpg','3416668169775.jpg','3417734673100.jpg','3418801166187.jpg','3419867654275.jpg','3420934157062.jpg','3422000655025.jpg','3423067137937.jpg','3424133641562.jpg','3425200135350.jpg','3426266632187.jpg','3427333129025.jpg','3428399622100.jpg','3429466124687.jpg','3430532614475.jpg','3431599109725.jpg','3432665602812.jpg','3433732099650.jpg','3434798599100.jpg','3435865101275.jpg','3436931598150.jpg','3437998086650.jpg'],
+      Exocentric: ['3324081076543.jpg','3325231415752.jpg','3326381755002.jpg','3327532094085.jpg','3328682432877.jpg','3329832771627.jpg','3330983110084.jpg','3332133448419.jpg','3333283786626.jpg','3334434124544.jpg','3335584462334.jpg','3336734799876.jpg','3337885137377.jpg','3339035474418.jpg','3340185811627.jpg','3341336148459.jpg','3342486485043.jpg','3343636821459.jpg','3344787157877.jpg','3345937493959.jpg','3347087830002.jpg','3348238166001.jpg','3349388501668.jpg','3350538837085.jpg','3351689172502.jpg','3352839507584.jpg','3353989842377.jpg','3355140176919.jpg','3356290511084.jpg','3357440844919.jpg','3358591178876.jpg','3359741512626.jpg','3360891845835.jpg','3362042179085.jpg','3363192512127.jpg','3364342844877.jpg','3365493177376.jpg','3366643509835.jpg','3367793842169.jpg','3368944174209.jpg','3370094505919.jpg','3371244837752.jpg','3372395169001.jpg','3373545500209.jpg','3374695831210.jpg','3375846162085.jpg','3376996492834.jpg','3378146823293.jpg','3379297153751.jpg','3380447483794.jpg','3381597814002.jpg','3382748143834.jpg','3383898473668.jpg','3385048803209.jpg','3386199132626.jpg','3387349461959.jpg','3388499791168.jpg','3389650120502.jpg','3390800449710.jpg','3391950778543.jpg','3393101107793.jpg','3394251436876.jpg','3395401765834.jpg','3396552094876.jpg','3397702423793.jpg','3398852752584.jpg','3400003081627.jpg','3401153410251.jpg','3402303738834.jpg','3403454067334.jpg','3404604396084.jpg','3405754724502.jpg','3406905053002.jpg','3408055381376.jpg','3409205709835.jpg','3410356037959.jpg','3411506366044.jpg','3412656694084.jpg','3413807022001.jpg','3414957349669.jpg','3416107677502.jpg','3417258004918.jpg','3418408332627.jpg','3419558659752.jpg','3420708987044.jpg','3421859314169.jpg','3423009641334.jpg','3424159968376.jpg','3425310295543.jpg','3426460622293.jpg','3427610949418.jpg','3428761276210.jpg','3429911603293.jpg','3431061930001.jpg','3432212256834.jpg','3433362583626.jpg','3434512910001.jpg','3435663236584.jpg','3436813562585.jpg','3437963888626.jpg'],
+      UMI:        ['3072049985050.jpg','3072749869300.jpg','3073449768762.jpg','3074149648637.jpg','3074849542600.jpg','3075549430550.jpg','3076249311387.jpg','3076949204725.jpg','3077649089925.jpg','3078348974975.jpg','3079048860600.jpg','3079748749762.jpg','3080448641425.jpg','3081148530387.jpg','3081848416675.jpg','3082548312350.jpg','3083248192725.jpg','3083948081475.jpg','3084647970225.jpg','3085347855137.jpg','3086047746050.jpg','3086747631512.jpg','3087447520675.jpg','3088147415100.jpg','3088847304300.jpg','3089547180975.jpg','3090247078800.jpg','3090946964425.jpg','3091646850475.jpg','3092346735512.jpg','3093046624300.jpg','3093746513050.jpg','3094446406975.jpg','3095146289475.jpg','3095846627300.jpg','3096546070050.jpg','3097245956387.jpg','3097945840137.jpg','3098645756887.jpg','3099345620762.jpg','3100045507262.jpg','3100745393425.jpg','3101445290350.jpg','3102145164100.jpg','3102845071600.jpg','3103544948637.jpg','3104244833425.jpg','3104944722175.jpg','3105644613850.jpg','3106344565262.jpg','3107044389387.jpg','3107744278975.jpg','3108444161675.jpg','3109144051100.jpg','3109843942475.jpg','3110543829012.jpg','3111243713675.jpg','3111943602425.jpg','3112643492262.jpg','3113343380137.jpg','3114043268887.jpg','3114743154887.jpg','3115443043475.jpg','3116142931137.jpg','3116842817975.jpg','3117542711137.jpg','3118242598300.jpg','3118942489225.jpg','3119642374262.jpg','3120342253012.jpg','3121042144100.jpg','3121742039175.jpg','3122441924475.jpg','3123141808675.jpg','3123841706512.jpg','3124541593262.jpg','3125241479550.jpg','3125941356675.jpg','3126641250887.jpg','3127341136675.jpg','3128041033100.jpg','3128740919850.jpg','3129440796675.jpg','3130140686975.jpg','3130840575725.jpg','3131540471512.jpg','3132240355475.jpg','3132940243550.jpg','3133640126387.jpg','3134340018637.jpg','3135039908175.jpg','3135739790225.jpg','3136439685600.jpg','3137139577762.jpg','3137839456137.jpg','3138539346137.jpg','3139239234925.jpg','3139939122550.jpg','3140639010475.jpg','3141338896637.jpg'],
+    },
+    Kitchen: {
+      basePath: './static/InTheWild/Kitchen/',
+      Hand:       ['7398970399975.jpg','7399836930437.jpg','7400703463100.jpg','7401569982975.jpg','7402436512100.jpg','7403303038475.jpg','7404169578025.jpg','7405036096937.jpg','7405902633437.jpg','7406769159350.jpg','7407635683650.jpg','7408502210812.jpg','7409368738475.jpg','7410235263850.jpg','7411101794725.jpg','7411968320975.jpg','7412834850400.jpg','7413701383100.jpg','7414567909900.jpg','7415434437775.jpg','7416300963812.jpg','7417167493937.jpg','7418034021650.jpg','7418900543775.jpg','7419767077062.jpg','7420633609025.jpg','7421500132525.jpg','7422366661312.jpg','7423233190437.jpg','7424099715150.jpg','7424966237975.jpg','7425832774400.jpg','7426699298475.jpg','7427565826775.jpg','7428432358900.jpg','7429298883312.jpg','7430165408600.jpg','7431031939850.jpg','7431898467687.jpg','7432764996312.jpg','7433631523850.jpg','7434498048187.jpg','7435364577225.jpg','7436231102850.jpg','7437097632525.jpg','7437964165900.jpg','7438830687150.jpg','7439697218812.jpg','7440563744400.jpg','7441430272275.jpg','7442296798100.jpg','7443163327225.jpg','7444029857312.jpg','7444896383350.jpg','7445762915900.jpg','7446629444525.jpg','7447495975150.jpg','7448362496100.jpg','7449229030650.jpg','7450095557100.jpg','7450962081437.jpg','7451828615975.jpg','7452695142775.jpg','7453561668275.jpg','7454428198225.jpg','7455294720562.jpg','7456161249350.jpg','7457027783100.jpg','7457894303025.jpg','7458760836475.jpg','7459627363600.jpg','7460493889400.jpg','7461360423225.jpg','7462226948187.jpg','7463093475812.jpg','7463960004937.jpg','7464826527187.jpg','7465693067275.jpg','7466559585437.jpg','7467426114725.jpg','7468292645975.jpg','7469159175225.jpg','7470025702812.jpg','7470892222775.jpg','7471758759150.jpg','7472625279437.jpg','7473491811525.jpg','7474358340650.jpg','7475224876937.jpg','7476091394475.jpg','7476957926100.jpg','7477824446187.jpg','7478690981275.jpg','7479557508687.jpg','7480424032850.jpg','7481290570312.jpg','7482157114725.jpg','7483023616312.jpg','7483890152687.jpg','7484756675100.jpg'],
+      HoiGripper: ['845200098987.jpg','847033156987.jpg','848866175612.jpg','850699214737.jpg','852532254862.jpg','854365294612.jpg','856198332237.jpg','858031366525.jpg','859864416862.jpg','861697456362.jpg','863530493987.jpg','865363530237.jpg','867196569575.jpg','869029606937.jpg','870862657187.jpg','872695685487.jpg','874528724987.jpg','876361771700.jpg','878194815737.jpg','880027850700.jpg','881860914487.jpg','883693932987.jpg','885526977450.jpg','887360008612.jpg','889193048612.jpg','891026093437.jpg','892859125562.jpg','894692167400.jpg','896525215937.jpg','898358250200.jpg','900191291200.jpg','902024336987.jpg','903857377987.jpg','905690415150.jpg','907523446325.jpg','909356490950.jpg','911189533525.jpg','913022569525.jpg','914855613650.jpg','916688653862.jpg','918521690687.jpg','920354734737.jpg','922187767825.jpg','924020809575.jpg','925853884937.jpg','927686889450.jpg','929519928525.jpg','931352973612.jpg','933186007437.jpg','935019046112.jpg','936852091775.jpg','938685132575.jpg','940518168025.jpg','942351214075.jpg','944184251237.jpg','946017288450.jpg','947850298900.jpg','949683371700.jpg','951516405487.jpg','953349445487.jpg','955182490362.jpg','957015534737.jpg','958848572325.jpg','960681613825.jpg','962514652025.jpg','964347688825.jpg','966180726862.jpg','968013769112.jpg','969846608150.jpg','971679853775.jpg','973512894025.jpg','975345942362.jpg','977178973525.jpg','979012010987.jpg','980845053575.jpg','982678089775.jpg','984511128612.jpg','986344171562.jpg','988177209112.jpg','990010256325.jpg','991843293450.jpg','993676336737.jpg','995509370825.jpg','997342413612.jpg','999175455450.jpg','1001008497075.jpg','1002841531612.jpg','1004674570362.jpg','1006507611650.jpg','1008340650612.jpg','1010173695237.jpg','1012006727075.jpg','1013839769450.jpg','1015672808400.jpg','1017505854612.jpg','1019338896862.jpg','1021171935400.jpg','1023004972700.jpg','1024838010237.jpg','1026671052775.jpg'],
+      Exocentric: ['836901771966.jpg','837952100548.jpg','839002428715.jpg','840052756423.jpg','841103083840.jpg','842153411048.jpg','843203737591.jpg','844254064008.jpg','845304390007.jpg','846354715632.jpg','847405040923.jpg','848455365923.jpg','849505690465.jpg','850556014632.jpg','851606338632.jpg','852656662090.jpg','853706985257.jpg','854823995465.jpg','856957984465.jpg','859058632090.jpg','861159281340.jpg','863259932298.jpg','865360585007.jpg','867461239173.jpg','869561894507.jpg','871662551090.jpg','873763208508.jpg','875863867257.jpg','877964526757.jpg','880065187048.jpg','882165848008.jpg','884266509590.jpg','886367171841.jpg','888467834673.jpg','890568498090.jpg','892669162007.jpg','894769826548.jpg','896870491715.jpg','898971157257.jpg','901071823007.jpg','903172489298.jpg','905273155923.jpg','907373823090.jpg','909474490590.jpg','911575158298.jpg','913675826258.jpg','915776494590.jpg','917877163132.jpg','919977831798.jpg','922078500673.jpg','924179169923.jpg','926279839298.jpg','928380509048.jpg','930481178840.jpg','932581848923.jpg','934682518965.jpg','936783189257.jpg','938883859715.jpg','940984530173.jpg','943085201007.jpg','945185871798.jpg','947286542923.jpg','949387214048.jpg','951487884882.jpg','953588556257.jpg','955689227548.jpg','957789898798.jpg','959890570382.jpg','961991241798.jpg','964091912757.jpg','966192584048.jpg','968293255590.jpg','970393927007.jpg','972494598757.jpg','974595270507.jpg','976695942382.jpg','978796614298.jpg','980897286132.jpg','982997958298.jpg','985098630423.jpg','987199302382.jpg','989299974632.jpg','991400647007.jpg','993501319216.jpg','995601991674.jpg','997702664173.jpg','999803336507.jpg','1001904009048.jpg','1004004681673.jpg','1006105354382.jpg','1008206026965.jpg','1010306699757.jpg','1012407372715.jpg','1014508045673.jpg','1016608718548.jpg','1018709391508.jpg','1020810064590.jpg','1022910737632.jpg','1025011410632.jpg','1027112083591.jpg'],
+      UMI:        ['7249121325125.jpg','7250221137050.jpg','7251320959925.jpg','7252420784925.jpg','7253520616087.jpg','7254620440875.jpg','7255720260550.jpg','7256820088625.jpg','7257919906300.jpg','7259019735337.jpg','7260119555675.jpg','7261219385675.jpg','7262319204800.jpg','7263419028962.jpg','7264518857875.jpg','7265618676500.jpg','7266718507000.jpg','7267818324125.jpg','7268918151800.jpg','7270017983050.jpg','7271117801375.jpg','7272217625300.jpg','7273317450837.jpg','7274417274800.jpg','7275517094875.jpg','7276616918050.jpg','7277716744712.jpg','7278816561175.jpg','7279916382550.jpg','7281016209675.jpg','7282116038837.jpg','7283215863750.jpg','7284315681750.jpg','7285415513550.jpg','7286515335750.jpg','7287615158625.jpg','7288714983212.jpg','7289814802675.jpg','7290914630087.jpg','7292014449750.jpg','7293114277300.jpg','7294214107300.jpg','7295313929212.jpg','7296413749000.jpg','7297513569425.jpg','7298613392837.jpg','7299713219750.jpg','7300813050375.jpg','7301912869962.jpg','7303012696425.jpg','7304112518125.jpg','7305212377300.jpg','7306312165550.jpg','7307411985212.jpg','7308511816587.jpg','7309611638300.jpg','7310711461300.jpg','7311811286300.jpg','7312911106712.jpg','7314010934800.jpg','7315110757462.jpg','7316210581212.jpg','7317310405462.jpg','7318410227337.jpg','7319510049000.jpg','7320609877587.jpg','7321709697050.jpg','7322809521212.jpg','7323909355550.jpg','7325009169500.jpg','7326108993625.jpg','7327208826837.jpg','7328308645750.jpg','7329408473250.jpg','7330508299300.jpg','7331608116212.jpg','7332707942000.jpg','7333807771050.jpg','7334907590625.jpg','7336007411462.jpg','7337107235625.jpg','7338207067962.jpg','7339306887750.jpg','7340406713300.jpg','7341506534925.jpg','7342606360087.jpg','7343706181925.jpg','7344806006337.jpg','7345905830587.jpg','7347005654625.jpg','7348105480587.jpg','7349205304712.jpg','7350305128875.jpg','7351404946962.jpg','7352504768000.jpg','7353604599212.jpg','7354704431125.jpg','7355804246837.jpg','7356904068875.jpg','7358003895125.jpg'],
+    },
+  };
+
+  const sensors = [
+    { id: 'frame-hand',    key: 'Hand' },
+    { id: 'frame-gripper', key: 'HoiGripper' },
+    { id: 'frame-exo',     key: 'Exocentric' },
+    { id: 'frame-umi',     key: 'UMI' },
+  ];
+
+  let currentScene = 'Bedroom';
+  const indices = { 'frame-hand': 0, 'frame-gripper': 0, 'frame-exo': 0, 'frame-umi': 0 };
+
+  function switchScene(scene) {
+    currentScene = scene;
+    const data = sceneData[scene];
+    sensors.forEach(s => {
+      indices[s.id] = 0;
+      const img = document.getElementById(s.id);
+      if (img) img.src = data.basePath + s.key + '/' + data[s.key][0];
+    });
+    const label = document.getElementById('leica-scene-label');
+    if (label) label.textContent = scene;
+    window.dispatchEvent(new CustomEvent('scenechange', { detail: { scene } }));
+  }
+
+  // Scene selector buttons
+  document.querySelectorAll('.scene-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.scene-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      switchScene(btn.dataset.scene);
+    });
+  });
+
+  // Animate all sensors
+  setInterval(() => {
+    const data = sceneData[currentScene];
+    sensors.forEach(s => {
+      const img = document.getElementById(s.id);
+      if (!img) return;
+      indices[s.id] = (indices[s.id] + 1) % data[s.key].length;
+      img.src = data.basePath + s.key + '/' + data[s.key][indices[s.id]];
+    });
+  }, 100);
+})();
+
+// ===== Citation Copy =====
+(function initCitation() {
+  const copyBtn = document.getElementById('copyBibtex');
+  const bibtexCode = document.getElementById('bibtexCode');
+  if (!copyBtn || !bibtexCode) return;
+
+  copyBtn.addEventListener('click', () => {
+    navigator.clipboard.writeText(bibtexCode.textContent.trim());
+    copyBtn.textContent = 'Copied!';
+    setTimeout(() => {
+      copyBtn.innerHTML = '<i class="fas fa-copy"></i> Copy';
+    }, 1500);
+  });
+})();

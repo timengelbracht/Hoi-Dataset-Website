@@ -1,187 +1,600 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="description" content="">
-  <link rel="icon" href="http://example.com/favicon.png">
-  <meta name="keywords" content="...">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Hoi! - A Multimodal Dataset for Force-Grounded, Cross-View Articulated Manipulation</title>
+  <title>Hoi! — A Multimodal Dataset for Force-Grounded, Cross-View Articulated Manipulation</title>
+  <meta name="description" content="Hoi! is a multimodal dataset for force-grounded, cross-view articulated manipulation with 3048 sequences across 381 objects in 38 environments.">
 
-  <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
+  <link rel="icon" type="image/png" href="./static/images/TextHoi.png">
 
-    function gtag() {
-      dataLayer.push(arguments);
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+
+  <!-- Three.js import map (must come before any module scripts) -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
     }
-
-    gtag('js', new Date());
-    gtag('config', 'G-PYVRSFMDRL');
+  }
   </script>
 
-  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
-        rel="stylesheet">
-
-  <link rel="stylesheet" href="./static/css/bulma.min.css">
-  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
-  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
-  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
-  <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
-  <link rel="stylesheet" href="./static/css/index.css">
-  <link rel="icon" href="./static/images/favicon.svg">
-
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script defer src="./static/js/fontawesome.all.min.js"></script>
-  <script src="./static/js/bulma-carousel.min.js"></script>
-  <script src="./static/js/bulma-slider.min.js"></script>
-  <script src="./static/js/index.js"></script>
+  <!-- Markdown parser for documentation -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+  <!-- Custom styles -->
+  <link rel="stylesheet" href="./static/css/style.css">
 </head>
 <body>
 
-<section class="hero">
-  <div class="hero-body">
-    <div class="container is-max-desktop">
-      <div class="columns is-centered">
-        <div class="column has-text-centered">
-          <!-- Logo (update the filename once you have a Hoi! logo) -->
-          <img src="./static/images/HoiTeaser.png" alt="Hoi! Logo">
+<!-- ===== INTRO OVERLAY ===== -->
+<div id="intro-overlay">
+  <canvas id="intro-canvas"></canvas>
+  <div id="intro-fade"></div>
+  <div id="intro-logo">
+    <img src="./static/images/TextHoi.png" alt="Hoi!">
+    <p>A Multimodal Dataset for Force-Grounded,<br>Cross-View Articulated Manipulation</p>
+  </div>
+  <button id="intro-skip">Skip <i class="fas fa-chevron-down"></i></button>
+</div>
 
-          <!-- Paper title -->
-          <h1 class="title is-1 publication-title">
-            Hoi! - A Multimodal Dataset for Force-Grounded, Cross-View Articulated Manipulation
-          </h1>
+<!-- Mobile sidebar toggle -->
+<button class="sidebar-toggle" aria-label="Toggle navigation">
+  <i class="fas fa-bars"></i>
+</button>
 
-          <!-- Authors -->
-          <div class="is-size-5 publication-authors">
-            <span class="author-block">
-              <a href="https://www.linkedin.com/in/timengelbracht/?locale=de_DE">Tim Engelbracht</a><sup>1</sup>,</span>
-            <span class="author-block">
-              <a href="https://renezurbruegg.github.io/">René Zurbrügg</a><sup>1</sup>,</span>
-            <span class="author-block">
-              <a href="#">Matteo Wohlrapp</a><sup>2</sup>,</span>
-            <span class="author-block">
-              <a href="#">Martin Büchner</a><sup>3</sup>,</span>
-            <span class="author-block">
-              <a href="#">Abhinav Valada</a><sup>3</sup>,</span>
-            <span class="author-block">
-              <a href="https://people.inf.ethz.ch/marc.pollefeys/">Marc Pollefeys</a><sup>1,4</sup>,</span>
-            <span class="author-block">
-              <a href="https://hermannblum.net/">Hermann Blum</a><sup>5</sup>,</span>
-            <span class="author-block">
-              <a href="https://zuriabauer.com/">Zuria Bauer</a><sup>1</sup>
-            </span>
-          </div>
+<!-- ===== SIDEBAR ===== -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <img src="./static/images/TextHoi.png" alt="Hoi!"
+         onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+    <div style="display:none; font-size:2rem; font-weight:800; color:#E87461; text-align:center; padding:.5rem 0;">Hoi!</div>
+  </div>
+  <div class="sidebar-subtitle">Multimodal Dataset for Force-Grounded,<br>Cross-View Articulated Manipulation</div>
+  <nav>
+    <a href="#hero" class="active"><i class="fas fa-home" style="width:18px"></i> Home</a>
+    <a href="#abstract"><i class="fas fa-align-left" style="width:18px"></i> Abstract</a>
+    <a href="#dataset"><i class="fas fa-database" style="width:18px"></i> The Dataset</a>
+    <a href="#figures"><i class="fas fa-chart-line" style="width:18px"></i> Figures</a>
+    <a href="#visualizer"><i class="fas fa-play-circle" style="width:18px"></i> Explore Samples</a>
+    <a href="#documentation"><i class="fas fa-book" style="width:18px"></i> Documentation</a>
+    <a href="#download"><i class="fas fa-download" style="width:18px"></i> Download</a>
+    <a href="#team"><i class="fas fa-users" style="width:18px"></i> Team</a>
+  </nav>
+  <div style="margin-top:auto; padding-top:.8rem; border-top:1px solid rgba(255,255,255,0.05);">
+    <a href="https://arxiv.org/abs/2512.04884" target="_blank" rel="noopener" style="font-size:.78rem; display:flex; align-items:center; gap:.4rem; color:#777; padding:.3rem .6rem;">
+      <i class="ai ai-arxiv" style="font-size:.95rem;"></i> Paper (ArXiv)
+    </a>
+  </div>
+</aside>
 
-          <!-- Affiliations -->
-          <div class="is-size-5 publication-authors">
-            <span class="author-block"><sup>1</sup>ETH Zurich,</span>
-            <span class="author-block"><sup>2</sup>Technical University of Munich,</span>
-            <span class="author-block"><sup>3</sup>University of Freiburg,</span>
-            <span class="author-block"><sup>4</sup>Microsoft,</span>
-            <span class="author-block"><sup>5</sup>University of Bonn</span>
-          </div>
+<!-- ===== MAIN CONTENT ===== -->
+<div class="main">
 
-          <!-- Buttons: Soon placeholders -->
-          <div class="column has-text-centered">
-            <div class="publication-links">
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <div class="hero-bg">
+      <video autoplay muted loop playsinline><source src="./static/videos_low/1_low.mp4" type="video/mp4"></video>
+      <video autoplay muted loop playsinline><source src="./static/videos_low/2_low.mp4" type="video/mp4"></video>
+      <video autoplay muted loop playsinline><source src="./static/videos_low/3_low.mp4" type="video/mp4"></video>
+      <video autoplay muted loop playsinline><source src="./static/videos_low/4_low.mp4" type="video/mp4"></video>
+      <video autoplay muted loop playsinline><source src="./static/videos_low/5_low.mp4" type="video/mp4"></video>
+      <video autoplay muted loop playsinline><source src="./static/videos_low/6_low.mp4" type="video/mp4"></video>
+    </div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-logo">
+        <img src="./static/images/LogoHoi.png" alt="Hoi!"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+        <div style="display:none; font-size:3.5rem; font-weight:800; color:#E87461;">Hoi!</div>
+      </div>
+      <h1>A Multimodal Dataset for Force-Grounded, Cross-View Articulated Manipulation</h1>
+      <p class="tagline">Coupling what is <strong style="color:#E87461">seen</strong>, what is <strong style="color:#E87461">done</strong>, and what is <strong style="color:#E87461">felt</strong> during real human interaction with articulated objects.</p>
 
-              <!-- Paper (soon) -->
-              <span class="link-block">
-                <a href="#" class="external-link button is-normal is-rounded is-dark">
-                  <span class="icon">
-                    <svg class="svg-inline--fa fa-file-pdf fa-w-12" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="file-pdf" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path fill="currentColor" d="M181.9 256.1c-5-16-4.9-46.9-2-46.9 8.4 0 7.6 36.9 2 46.9zm-1.7 47.2c-7.7 20.2-17.3 43.3-28.4 62.7 18.3-7 39-17.2 62.9-21.9-12.7-9.6-24.9-23.4-34.5-40.8zM86.1 428.1c0 .8 13.2-5.4 34.9-40.2-6.7 6.3-29.1 24.5-34.9 40.2zM248 160h136v328c0 13.3-10.7 24-24 24H24c-13.3 0-24-10.7-24-24V24C0 10.7 10.7 0 24 0h200v136c0 13.2 10.8 24 24 24zm-8 171.8c-20-12.2-33.3-29-42.7-53.8 4.5-18.5 11.6-46.6 6.2-64.2-4.7-29.4-42.4-26.5-47.8-6.8-5 18.3-.4 44.1 8.1 77-11.6 27.6-28.7 64.6-40.8 85.8-.1 0-.1.1-.2.1-27.1 13.9-73.6 44.5-54.5 68 5.6 6.9 16 10 21.5 10 17.9 0 35.7-18 61.1-61.8 25.8-8.5 54.1-19.1 79-23.2 21.7 11.8 47.1 19.5 64 19.5 29.2 0 31.2-32 19.7-43.4-13.9-13.6-54.3-9.7-73.6-7.2zM377 105L279 7c-4.5-4.5-10.6-7-17-7h-6v128h128v-6.1c0-6.3-2.5-12.4-7-16.9zm-74.1 255.3c4.1-2.7-2.5-11.9-42.8-9 37.1 15.8 42.8 9 42.8 9z"></path></svg>
-                  </span>
-                  <span>Soon</span>
-                </a>
-              </span>
+      <div class="authors">
+        <a href="https://www.linkedin.com/in/timengelbracht/">Tim Engelbracht</a><sup>1</sup>,
+        <a href="https://renezurbruegg.github.io/">René Zurbrügg</a><sup>1</sup>,
+        <a href="#">Matteo Wohlrapp</a><sup>2</sup>,
+        <a href="https://rl.uni-freiburg.de/people/buechner">Martin Büchner</a><sup>3</sup>,
+        <a href="https://rl.uni-freiburg.de/people/valada">Abhinav Valada</a><sup>3</sup>,
+        <a href="https://people.inf.ethz.ch/marc.pollefeys/">Marc Pollefeys</a><sup>1,4</sup>,
+        <a href="https://hermannblum.net/">Hermann Blum</a><sup>5</sup>,
+        <a href="https://zuriabauer.com/">Zuria Bauer</a><sup>1</sup>
+      </div>
+      <div class="affiliations">
+        <sup>1</sup>ETH Zurich · <sup>2</sup>TU Munich · <sup>3</sup>U. Freiburg · <sup>4</sup>Microsoft · <sup>5</sup>U. Bonn
+      </div>
 
-              <!-- Code (soon) -->
-              <span class="link-block">
-                <a href="#" class="external-link button is-normal is-rounded is-dark">
-                  <span class="icon">
-                    <svg class="svg-inline--fa fa-github fa-w-16" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="github" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path fill="currentColor" d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8z"></path></svg>
-                  </span>
-                  <span>Soon</span>
-                </a>
-              </span>
-
-              <!-- Data (soon) -->
-              <span class="link-block">
-                <a href="#" class="external-link button is-normal is-rounded is-dark">
-                  <span class="icon">
-                    <svg class="svg-inline--fa fa-images fa-w-18" aria-hidden="true" focusable="false" data-prefix="far" data-icon="images" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="currentColor" d="M480 416v16c0 26.51-21.49 48-48 48H48c-26.51 0-48-21.49-48-48V176c0-26.51 21.49-48 48-48h16v48H54a6 6 0 0 0-6 6v244a6 6 0 0 0 6 6h372a6 6 0 0 0 6-6v-10h48zm42-336H150a6 6 0 0 0-6 6v244a6 6 0 0 0 6 6h372a6 6 0 0 0 6-6V86a6 6 0 0 0-6-6zm6-48c26.51 0 48 21.49 48 48v256c0 26.51-21.49 48-48 48H144c-26.51 0-48-21.49-48-48V80c0-26.51 21.49-48 48-48h384zM264 144c0 22.091-17.909 40-40 40s-40-17.909-40-40 17.909-40 40-40 40 17.909 40 40zm-72 96l39.515-39.515c4.686-4.686 12.284-4.686 16.971 0L288 240l103.515-103.515c4.686-4.686 12.284-4.686 16.971 0L480 208v80H192v-48z"></path></svg>
-                  </span>
-                  <span>Soon</span>
-                </a>
-              </span>
-
-              <span class="link-block"></span>
-                <a href="https://drive.google.com/drive/folders/1Hzpt5WXFbUg0CNVU7gudH-4z-HkC6kGR?usp=drive_link"
-                  class="external-link button is-normal is-rounded is-primary"
-                  target="_blank" rel="noopener">
-                  <span class="icon">
-                    <i class="fas fa-folder-open"></i>
-                  </span>
-                  <span>Example Data</span>
-                </a>
-              </span>
-
-            </div>
-          </div>
-        </div>
+      <div class="btn-row">
+        <a href="https://arxiv.org/abs/2512.04884" target="_blank" rel="noopener" class="btn btn-primary">
+          <i class="ai ai-arxiv"></i> Paper (ArXiv)
+        </a>
+        <a href="#" class="btn btn-disabled" onclick="return false"><i class="fab fa-github"></i> Code — Soon</a>
+        <a href="#" class="btn btn-disabled" onclick="return false"><i class="fas fa-database"></i> Dataset — Soon</a>
+        <a href="https://drive.google.com/drive/folders/1Hzpt5WXFbUg0CNVU7gudH-4z-HkC6kGR" target="_blank" rel="noopener" class="btn btn-primary">
+          <i class="fas fa-folder-open"></i> Example Data
+        </a>
       </div>
     </div>
+  </section>
+
+  <!-- TEASER -->
+  <div class="teaser-wrap">
+    <img src="./static/images/Teaser.png" alt="Hoi! dataset teaser" loading="lazy">
   </div>
-</section>
 
-<!-- ================= README / WIKI ================= -->
-<section class="section">
-  <div class="container is-max-desktop content">
-    <h2 class="title is-3">Dataset Documentation</h2>
+  <!-- STATS -->
+  <div class="stats-bar">
+    <div class="stat-item"><div class="stat-num">3048</div><div class="stat-label">Sequences</div></div>
+    <div class="stat-item"><div class="stat-num">381</div><div class="stat-label">Articulated Objects</div></div>
+    <div class="stat-item"><div class="stat-num">38</div><div class="stat-label">Environments</div></div>
+    <div class="stat-item"><div class="stat-num">4</div><div class="stat-label">Embodiments</div></div>
+  </div>
 
-    <div id="readme-content">
-      Loading documentation…
+  <!-- ABSTRACT -->
+  <section class="section" id="abstract">
+    <h2 class="section-title">Abstract</h2>
+    <div class="section-divider"></div>
+    <p class="abstract-text">
+      We present a dataset for force-grounded, cross-view articulated manipulation that couples what is seen with what is done and what is felt during real human interaction. The dataset contains <strong style="color:#E87461">3048 sequences</strong> across <strong style="color:#E87461">381 articulated objects</strong> in <strong style="color:#E87461">38 environments</strong>. Each object is operated under four embodiments — (i) human hand, (ii) human hand with a wrist-mounted camera, (iii) handheld UMI gripper, and (iv) a custom Hoi! gripper — where the tool embodiment provides synchronized end-effector forces and tactile sensing. Our dataset offers a holistic view of interaction understanding from video, enabling researchers to evaluate how well methods transfer between human and robotic viewpoints, but also investigate underexplored modalities such as force sensing and prediction.
+    </p>
+  </section>
+
+  <!-- DATASET OVERVIEW -->
+  <section class="section" id="dataset">
+    <h2 class="section-title">The <span class="accent">Dataset</span></h2>
+    <div class="section-divider"></div>
+    <div class="overview-grid">
+      <div class="overview-card">
+        <div class="card-icon"><i class="fas fa-hand-paper"></i></div>
+        <h3>4 Manipulation Schemes</h3>
+        <p>Hoi! gripper, human hand, hand with wrist-camera, and UMI gripper — enabling cross-embodiment research.</p>
+      </div>
+      <div class="overview-card">
+        <div class="card-icon"><i class="fas fa-video"></i></div>
+        <h3>Multi-View Capture</h3>
+        <p>Egocentric (Aria glasses), manipulation-centric (wrist/gripper), and exocentric (iPhone RGB-D) viewpoints.</p>
+      </div>
+      <div class="overview-card">
+        <div class="card-icon"><i class="fas fa-bolt"></i></div>
+        <h3>Force &amp; Tactile Sensing</h3>
+        <p>Synchronized force/torque and DIGIT tactile sensing through the custom Hoi! gripper.</p>
+      </div>
+      <div class="overview-card">
+        <div class="card-icon"><i class="fas fa-cube"></i></div>
+        <h3>Spatial Alignment</h3>
+        <p>All recordings registered to a common frame via Leica laser scans, with articulated and static states.</p>
+      </div>
+      <div class="overview-card">
+        <div class="card-icon"><i class="fas fa-door-open"></i></div>
+        <h3>381 Articulated Objects</h3>
+        <p>Drawers, cabinets, dishwashers, fridges — across 38 real-world kitchens, bathrooms, and bedrooms.</p>
+      </div>
+      <div class="overview-card">
+        <div class="card-icon"><i class="fas fa-sync-alt"></i></div>
+        <h3>Temporally Aligned</h3>
+        <p>Nanosecond-resolution timestamps across all recording modules within each session.</p>
+      </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<script>
-  fetch("wiki.md")
-    .then(r => r.text())
-    .then(md => {
-      document.getElementById("readme-content").innerHTML =
-        marked.parse(md);
-    })
-    .catch(err => {
-      console.error(err);
-      document.getElementById("readme-content").innerHTML =
-        "<p><strong>Failed to load README.</strong></p>";
+  <!-- PAPER FIGURES -->
+  <section class="section" id="figures">
+    <h2 class="section-title">Paper <span class="accent">Figures</span></h2>
+    <div class="section-divider"></div>
+    <p style="color:#888; margin-bottom:1.5rem; font-size:.9rem;">Key figures from the paper. See the <a href="https://arxiv.org/abs/2512.04884" target="_blank">full paper</a> for all figures and details.</p>
+
+    <!-- Pipeline (full width) -->
+    <div class="fig-grid fig-full">
+      <div class="fig-card">
+        <img src="./static/images/HoiPipeline1-2.png" alt="Recording pipeline" loading="lazy">
+        <div class="fig-cap"><strong>Recording Pipeline.</strong> The four manipulation schemes and recording modules used for capture.</div>
+      </div>
+    </div>
+
+    <!-- Stats + Forces (side by side) -->
+    <div class="fig-grid fig-half" style="margin-top:1.5rem;">
+      <div class="fig-card">
+        <img src="./static/images/HoiStats.png" alt="Dataset statistics" loading="lazy">
+        <div class="fig-cap"><strong>Dataset Statistics.</strong> Distribution of environments and articulated interaction categories in the Hoi! dataset.</div>
+      </div>
+      <div class="fig-card">
+        <img src="./static/images/forces_figure.png" alt="Force profiles" loading="lazy">
+        <div class="fig-cap"><strong>Force Profiles.</strong> Force/torque measurements during articulated object manipulation.</div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- VISUALIZER -->
+  <section class="section" id="visualizer">
+    <h2 class="section-title">Explore <span class="accent">Samples</span></h2>
+    <div class="section-divider"></div>
+    <p style="color:#555; margin-bottom:1.2rem; font-size:.9rem;">RGB image sequences from each recording modality and a 3D Leica point cloud. Select a scene to explore.</p>
+
+    <div class="scene-selector">
+      <span class="scene-label">Scene:</span>
+      <button class="scene-btn active" data-scene="Bedroom">Bedroom</button>
+      <button class="scene-btn" data-scene="Kitchen">Kitchen</button>
+      <button class="scene-btn" data-scene="Bathroom">Bathroom</button>
+    </div>
+
+    <div class="sensor-grid">
+      <div class="sensor-card">
+        <div class="sensor-card-header"><i class="fas fa-hand-paper"></i> Human Hand</div>
+        <img class="sensor-frame" id="frame-hand" src="./static/InTheWild/Bedroom/Hand/806164452125.jpg" alt="Human Hand view">
+      </div>
+      <div class="sensor-card">
+        <div class="sensor-card-header"><i class="fas fa-robot"></i> Hoi! Gripper</div>
+        <img class="sensor-frame" id="frame-gripper" src="./static/InTheWild/Bedroom/HoiGripper/3332414987725.jpg" alt="Hoi! Gripper view">
+      </div>
+      <div class="sensor-card">
+        <div class="sensor-card-header"><i class="fas fa-camera"></i> Exocentric (iPhone)</div>
+        <img class="sensor-frame" id="frame-exo" src="./static/InTheWild/Bedroom/Exocentric/3324081076543.jpg" alt="Exocentric view">
+      </div>
+      <div class="sensor-card">
+        <div class="sensor-card-header"><i class="fas fa-grip-lines"></i> UMI Gripper</div>
+        <img class="sensor-frame" id="frame-umi" src="./static/InTheWild/Bedroom/UMI/3072049985050.jpg" alt="UMI Gripper view">
+      </div>
+    </div>
+
+    <div class="leica-section">
+      <h3 class="sensor-section-title"><i class="fas fa-cube"></i> Leica Point Cloud — <span id="leica-scene-label">Bedroom</span></h3>
+      <canvas id="pointcloud-canvas"></canvas>
+      <p class="pc-hint">Click and drag to rotate &middot; Scroll to zoom</p>
+    </div>
+  </section>
+
+  <!-- DOCUMENTATION -->
+  <section class="section" id="documentation">
+    <h2 class="section-title">Dataset <span class="accent">Documentation</span></h2>
+    <div class="section-divider"></div>
+    <div class="docs-box" id="docs-content">Loading documentation…</div>
+  </section>
+
+  <!-- DOWNLOAD -->
+  <section class="section" id="download">
+    <h2 class="section-title">Download</h2>
+    <div class="section-divider"></div>
+    <p style="color:#888; margin-bottom:1.2rem; font-size:.9rem;">Full dataset and code coming soon. Example data available now.</p>
+    <div class="btn-row" style="justify-content:flex-start;">
+      <a href="https://drive.google.com/drive/folders/1Hzpt5WXFbUg0CNVU7gudH-4z-HkC6kGR" target="_blank" rel="noopener" class="btn btn-primary">
+        <i class="fas fa-folder-open"></i> Example Data
+      </a>
+      <a href="#" class="btn btn-disabled" onclick="return false"><i class="fas fa-database"></i> Full Dataset — Soon</a>
+      <a href="#" class="btn btn-disabled" onclick="return false"><i class="fab fa-github"></i> Code — Soon</a>
+    </div>
+  </section>
+
+  <!-- TEAM -->
+  <section class="section" id="team">
+    <h2 class="section-title">Team</h2>
+    <div class="section-divider"></div>
+    <div class="team-grid">
+      <a href="https://www.linkedin.com/in/timengelbracht/" target="_blank" class="team-member">
+        <div class="avatar"><img src="./static/images/TimEngelbracht.jpeg" alt="TE" loading="lazy"></div>
+        <div class="name">Tim Engelbracht</div><div class="affil">ETH Zurich</div>
+      </a>
+      <a href="https://renezurbruegg.github.io/" target="_blank" class="team-member">
+        <div class="avatar"><img src="https://renezurbruegg.github.io/assets/img/avatar.jpeg" alt="RZ" loading="lazy"></div>
+        <div class="name">René Zurbrügg</div><div class="affil">ETH Zurich</div>
+      </a>
+      <a href="#" class="team-member">
+        <div class="avatar"><img src="./static/images/MatteoWohlrapp.jpeg" alt="MW" loading="lazy"></div>
+        <div class="name">Matteo Wohlrapp</div><div class="affil">TU Munich</div>
+      </a>
+      <a href="https://rl.uni-freiburg.de/people/buechner" target="_blank" class="team-member">
+        <div class="avatar"><img src="./static/images/MartinBuchner.jpeg" alt="MB" loading="lazy"></div>
+        <div class="name">Martin Büchner</div><div class="affil">U. Freiburg</div>
+      </a>
+      <a href="https://rl.uni-freiburg.de/people/valada" target="_blank" class="team-member">
+        <div class="avatar"><img src="https://rl.uni-freiburg.de/img/people/valada_page" alt="AV" loading="lazy"></div>
+        <div class="name">Abhinav Valada</div><div class="affil">U. Freiburg</div>
+      </a>
+      <a href="https://people.inf.ethz.ch/marc.pollefeys/" target="_blank" class="team-member">
+        <div class="avatar"><img src="https://people.inf.ethz.ch/marc.pollefeys/pics/marc.jpg" alt="MP" loading="lazy"></div>
+        <div class="name">Marc Pollefeys</div><div class="affil">ETH / Microsoft</div>
+      </a>
+      <a href="https://hermannblum.net/" target="_blank" class="team-member">
+        <div class="avatar"><img src="./static/images/HermanBlum.jpeg" alt="HB" loading="lazy"></div>
+        <div class="name">Hermann Blum</div><div class="affil">U. Bonn</div>
+      </a>
+      <a href="https://zuriabauer.com/" target="_blank" class="team-member">
+        <div class="avatar"><img src="https://zuriabauer.com/assets/images/ZBauer.png" alt="ZB" loading="lazy"></div>
+        <div class="name">Zuria Bauer</div><div class="affil">ETH Zurich</div>
+      </a>
+    </div>
+  </section>
+
+  <!-- CITATION -->
+  <section class="section" id="citation">
+    <h2 class="section-title">Citation</h2>
+    <div class="section-divider"></div>
+    <div class="citation-box">
+      <button class="copy-btn" id="copyBibtex">
+        <i class="fas fa-copy"></i> Copy
+      </button>
+      <pre><code id="bibtexCode">@article{engelbracht2025hoi,
+  title={Hoi! -- A Multimodal Dataset for Force-Grounded, Cross-View Articulated Manipulation},
+  author={Engelbracht, Tim and Zurbrügg, René and Wohlrapp, Matteo and Büchner, Martin and Valada, Abhinav and Pollefeys, Marc and Blum, Hermann and Bauer, Zuria},
+  journal={arXiv preprint arXiv:2512.04884},
+  year={2025}
+}</code></pre>
+    </div>
+  </section>
+
+  <!-- AFFILIATIONS -->
+  <section class="section" id="affiliations">
+    <div class="affil-logos">
+      <img src="./static/images/ETH_Zürich.png" alt="ETH Zurich">
+      <img src="./static/images/tum.svg" alt="TU Munich">
+      <img src="./static/images/UFR.png" alt="University of Freiburg">
+      <img src="./static/images/Universität_Bonn.png" alt="University of Bonn">
+      <img src="./static/images/microsoft.webp" alt="Microsoft">
+    </div>
+  </section>
+
+</div>
+
+<footer class="footer">Hoi! Dataset &copy; 2025–2026 · ETH Zurich and collaborators</footer>
+
+<!-- Main JavaScript -->
+<script src="./static/js/main.js"></script>
+
+<!-- Intro Animation -->
+<script type="module">
+import * as THREE from 'three';
+import { PLYLoader } from 'three/addons/loaders/PLYLoader.js';
+import { Line2 } from 'three/addons/lines/Line2.js';
+import { LineGeometry } from 'three/addons/lines/LineGeometry.js';
+import { LineMaterial } from 'three/addons/lines/LineMaterial.js';
+
+const overlay  = document.getElementById('intro-overlay');
+const canvas   = document.getElementById('intro-canvas');
+const fade     = document.getElementById('intro-fade');
+const skipBtn  = document.getElementById('intro-skip');
+
+document.body.style.overflow = 'hidden';
+
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+renderer.setPixelRatio(window.devicePixelRatio);
+renderer.localClippingEnabled = true;
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xffffff);
+
+const camera = new THREE.PerspectiveCamera(55, 2, 0.01, 200);
+
+function resize() {
+  const w = window.innerWidth, h = window.innerHeight;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+}
+window.addEventListener('resize', resize);
+resize();
+
+let startTime = null;
+let dismissed = false;
+const HOLD = 3800;   // ms before fade starts
+const FADE = 1200;   // ms for white fade
+
+function dismiss() {
+  if (dismissed) return;
+  dismissed = true;
+  fade.style.transition = `opacity ${FADE}ms ease`;
+  fade.style.opacity = '1';
+  setTimeout(() => {
+    overlay.style.display = 'none';
+    document.body.style.overflow = '';
+  }, FADE);
+}
+
+skipBtn.addEventListener('click', dismiss);
+
+const loader = new PLYLoader();
+loader.load('./static/InTheWild/Kitchen/Leica/points_voxel_0.010.ply?v=2', (geometry) => {
+  geometry.computeBoundingBox();
+  const box = geometry.boundingBox;
+  const center = new THREE.Vector3();
+  box.getCenter(center);
+  geometry.translate(-center.x, -center.y, -center.z);
+
+  const size = new THREE.Vector3();
+  box.getSize(size);
+  const scale = 5 / Math.max(size.x, size.y, size.z);
+
+  const hasColor = !!geometry.attributes.color;
+  const mat = new THREE.PointsMaterial({
+    size: 0.018, vertexColors: hasColor,
+    color: hasColor ? undefined : new THREE.Color(0xE87461),
+    sizeAttenuation: true, transparent: true, opacity: 0,
+    clippingPlanes: [],
+  });
+
+  const points = new THREE.Points(geometry, mat);
+  points.scale.setScalar(scale);
+  points.rotation.x = -Math.PI / 2;
+  scene.add(points);
+
+  // Load and draw trajectory
+  fetch('./static/InTheWild/Kitchen/trajectory.json')
+    .then(r => r.json())
+    .then(pts => {
+      const positions = [];
+      for (const [tx, ty, tz] of pts) {
+        // Apply same centering + scale as point cloud, then rotation.x = -π/2
+        // rotation.x = -π/2: (x,y,z) → (x, z, -y)
+        const x = (tx - center.x) * scale;
+        const y = (ty - center.y) * scale;
+        const z = (tz - center.z) * scale;
+        positions.push(x, z, -y);
+      }
+      const geo = new LineGeometry();
+      geo.setPositions(positions);
+      const lineMat = new LineMaterial({
+        color: 0xE87461, linewidth: 4,
+        transparent: true, opacity: 0,
+        resolution: new THREE.Vector2(window.innerWidth, window.innerHeight),
+      });
+      window.addEventListener('resize', () => {
+        lineMat.resolution.set(window.innerWidth, window.innerHeight);
+      });
+      const line = new Line2(geo, lineMat);
+      line.computeLineDistances();
+      scene.add(line);
+
+      scene._trajMat = lineMat;
     });
+
+  const startAngle = Math.PI / 10;
+  camera.position.set(Math.cos(startAngle) * 2.5, 2.5, Math.sin(startAngle) * 2.5);
+  camera.lookAt(0, 0, 0);
+  startTime = performance.now();
+
+  (function animate() {
+    if (dismissed && fade.style.opacity === '1') return;
+    requestAnimationFrame(animate);
+
+    const elapsed = performance.now() - startTime;
+    const t = elapsed / 1000;
+
+    // Fade point cloud + trajectory in over first 0.8s
+    mat.opacity = Math.min(1, t / 0.8);
+    if (scene._trajMat) scene._trajMat.opacity = Math.min(1, t / 0.8);
+
+    // Slow orbit + gentle dolly
+    const radius = 2.5 - t * 0.05;
+    const angle  = startAngle + t * 0.25;
+    camera.position.set(
+      Math.cos(angle) * radius,
+      2.5 - t * 0.03,
+      Math.sin(angle) * radius
+    );
+    camera.lookAt(0, 0, 0);
+
+    renderer.render(scene, camera);
+
+    if (elapsed > HOLD && !dismissed) dismiss();
+  })();
+});
 </script>
 
-<section class="section">
-  <div class="container is-max-desktop content">
-    <h2 class="title is-3">Changelog</h2>
-    <div id="changelog-content">
-      Loading changelog…
-    </div>
-  </div>
-</section>
+<!-- Three.js Point Cloud Viewer -->
+<script type="module">
+import * as THREE from 'three';
+import { PLYLoader } from 'three/addons/loaders/PLYLoader.js';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-<script>
-  fetch("CHANGELOG.md")
-    .then(r => r.text())
-    .then(md => {
-      document.getElementById("changelog-content").innerHTML =
-        marked.parse(md);
+const canvas = document.getElementById('pointcloud-canvas');
+if (!canvas) throw new Error('No canvas');
+
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+renderer.setPixelRatio(window.devicePixelRatio);
+renderer.localClippingEnabled = true;
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xf4f4f4);
+
+const camera = new THREE.PerspectiveCamera(45, 2, 0.01, 200);
+camera.position.set(0, 0, 2);
+
+const controls = new OrbitControls(camera, canvas);
+controls.enableDamping = true;
+controls.dampingFactor = 0.05;
+
+const ambient = new THREE.AmbientLight(0xffffff, 0.9);
+scene.add(ambient);
+const dirLight = new THREE.DirectionalLight(0xffffff, 0.6);
+dirLight.position.set(2, 4, 3);
+scene.add(dirLight);
+
+function resize() {
+  const w = canvas.clientWidth;
+  const h = canvas.clientHeight;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+}
+window.addEventListener('resize', resize);
+resize();
+
+let currentObj = null;
+const loader = new PLYLoader();
+
+function loadPLY(url, sceneName) {
+  loader.load(url, (geometry) => {
+    geometry.computeBoundingBox();
+    const box = geometry.boundingBox;
+    const center = new THREE.Vector3();
+    box.getCenter(center);
+    geometry.translate(-center.x, -center.y, -center.z);
+
+    const size = new THREE.Vector3();
+    box.getSize(size);
+    const scale = 5 / Math.max(size.x, size.y, size.z);
+
+    if (currentObj) scene.remove(currentObj);
+
+    const hasColor = !!geometry.attributes.color;
+    const clipDist = 2.0;
+    const mat = new THREE.PointsMaterial({
+      size: 0.015,
+      vertexColors: hasColor,
+      color: hasColor ? undefined : new THREE.Color(0xE87461),
+      sizeAttenuation: true,
+      clippingPlanes: [
+        new THREE.Plane(new THREE.Vector3(0, -1, 0), clipDist),
+        new THREE.Plane(new THREE.Vector3(0,  1, 0), clipDist),
+      ],
     });
-</script>
+    const obj = new THREE.Points(geometry, mat);
+    obj.rotation.x = -Math.PI / 2;
+    if (sceneName === 'Bathroom') obj.rotation.z = -45 * Math.PI / 180;
+    if (sceneName === 'Bedroom') obj.rotation.z = 45 * Math.PI / 180;
+    obj.scale.setScalar(scale);
+    scene.add(obj);
+    currentObj = obj;
+    if (sceneName === 'Kitchen') {
+      controls.target.set(0, 0, 0);
+      camera.position.set(-1.0, 2.0, -2.8);
+    } else if (sceneName === 'Bedroom') {
+      controls.target.set(0, 0, 0);
+      camera.position.set(0, 3, 0.5);
+    } else if (sceneName === 'Bathroom') {
+      controls.target.set(-1.6, 0, 0);
+      camera.position.set(-1.409, 0, 0.84);
+    } else {
+      controls.target.set(0, 0, 0);
+      camera.position.set(0, 0, 2);
+    }
+    controls.update();
+  });
+}
 
+const plyPaths = {
+  Bathroom: './static/InTheWild/Bathroom/Laica/points_voxel_0.010.ply?v=2',
+  Bedroom:  './static/InTheWild/Bedroom/Leica/points_voxel_0.010.ply?v=2',
+  Kitchen:  './static/InTheWild/Kitchen/Leica/points_voxel_0.010.ply?v=2',
+};
+
+loadPLY(plyPaths['Bedroom'], 'Bedroom');
+
+window.addEventListener('scenechange', (e) => {
+  loadPLY(plyPaths[e.detail.scene], e.detail.scene);
+});
+
+(function animate() {
+  requestAnimationFrame(animate);
+  controls.update();
+  renderer.render(scene, camera);
+})();
+</script>
 </body>
 </html>
-
-
