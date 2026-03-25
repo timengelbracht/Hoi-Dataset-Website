@@ -150,12 +150,13 @@ The following coordinate frames are commonly used throughout the dataset:
 │   └── iphone_2/
 │
 ├── leica/
-│   └── <setup>/
-│       ├── images/
-│       ├── mesh/
-│       ├── points/
-│       ├── points_downsampled/
-│       └── (registration metadata)
+│   ├── <setup>/
+│   │    ├── images/
+│   │    ├── mesh/
+│   │    ├── points/
+│   │    ├── points_downsampled/
+│   │    └── (registration metadata)
+│   └── <recording_location>.json (articulation annotations in aligned frame)
 │
 ├── umi/
 │   ├── aria_human/
