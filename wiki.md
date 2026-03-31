@@ -65,6 +65,21 @@ For each interaction, the following viewpoints may be present:
 
 - Values expressed in the Aria device frame can be transformed into the world (Leica) frame using the rigid transformations provided in the corresponding `calib/` directories.
 
+We use the convention `p_A = T_A_B @ p_B`, i.e. `T_A_B` maps points from frame `B` into frame `A`.
+
+For the Aria RGB calibration, `T_device_camera` stores the transform from the raw camera frame to the device frame.
+
+The key `pinhole_T_device_camera` is a bit misleadingly named. In practice, it does not store the rectified-camera-to-device transform, but rather the transform from the rectified pinhole camera frame to the raw camera frame.
+
+Therefore, the rectified-camera-to-device transform is obtained as:
+
+`T_device_camRaw = aria_calibration["PINHOLE"]["T_device_camera"]`  
+`T_camRaw_camRect = aria_calibration["PINHOLE"]["pinhole_T_device_camera"]  # name is misleading`  
+`T_device_camRect = T_device_camRaw @ T_camRaw_camRect`
+
+A clearer name for `pinhole_T_device_camera` would be `T_camRaw_camRect`.
+
+
 **TODO:** Add more extensive explanations of the transformation chains and frame conventions.
 
 ### Important Coordinate Frames
