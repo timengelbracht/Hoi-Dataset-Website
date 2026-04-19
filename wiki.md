@@ -130,67 +130,112 @@ The following coordinate frames are commonly used throughout the dataset:
 ```
 <recording_location>/
 ├── gripper/
+│   ├── interaction_splitting_info_<interaction_indices>.json
+│   ├── interaction_splitting_info_<interaction_indices>_confirmed.json
 │   ├── aria_gripper/
-│   │   └── <recording_location>_<interaction_indices>_<recording_type>_vrs/
+│   │   └── <recording_location>_<interaction_indices>_gripper_vrs/
+│   │       ├── anonymization.json
+│   │       ├── statistics.json
+│   │       ├── time_sync_info.json
+│   │       ├── anonymization_cache/
 │   │       ├── calib/
 │   │       ├── camera_depth/
 │   │       ├── camera_rgb/
 │   │       ├── eye_gaze/
-│   │       ├── handtracking/
+│   │       ├── hand_tracking/
 │   │       ├── slam/
-│   │       └── (additional alignment artifacts)
-│   │
+│   │       └── visual_registration/
 │   ├── aria_human/
-│   │   └── (same structure as aria_gripper)
-│   │
+│   │   └── <recording_location>_<interaction_indices>_gripper_vrs/
+│   │       └── (same general Aria structure as above)
 │   ├── gripper/
-│   │   └── <recording_location>_<interaction_indices>_<recording_type>_bag/
+│   │   └── <recording_location>_<interaction_indices>_gripper_bag/
+│   │       ├── anonymization.json
+│   │       ├── time_sync_info.json
+│   │       ├── anonymization_cache/
 │   │       ├── calib/
 │   │       ├── digit/
 │   │       ├── dynamixel_workbench/
 │   │       ├── force_torque/
 │   │       ├── gripper_force_trigger/
-│   │       ├── zedm/
-│   │       └── (additional metadata)
-│   │
-│   ├── iphone_1/
-│   │   └── <recording_location>_<interaction_indices>_<recording_type>/
+│   │       ├── tf_static/
+│   │       └── zedm/
+│   ├── iphone_1/ or iphone_1 (<color>)/
+│   │   └── <recording_location>_<interaction_indices>_gripper/
+│   │       ├── anonymization.json
+│   │       ├── metadata
+│   │       ├── statistics.json
+│   │       ├── time_sync_info.json
+│   │       ├── anonymization_cache/
 │   │       ├── camera_depth/
 │   │       ├── camera_rgb/
 │   │       ├── poses/
-│   │       ├── poses_aligned/
-│   │       └── (registration metadata)
-│   │
-│   └── iphone_2/
-│       └── (same structure as iphone_1)
-│
-├── interaction_splitting_info.json
-│
+│   │       ├── rgbd/
+│   │       ├── visual_registration/
+│   │       └── poses_aligned/ (if present)
+│   └── iphone_2/ or iphone_2 (<color>)/
+│       └── (same general iPhone structure as iphone_1)
 ├── hand/
+│   ├── interaction_splitting_info_<interaction_indices>.json
+│   ├── interaction_splitting_info_<interaction_indices>_confirmed.json
 │   ├── aria_human/
-│   ├── iphone_1/
-│   └── iphone_2/
-│
+│   │   └── <recording_location>_<interaction_indices>_hand_vrs/
+│   │       └── (same general Aria structure; multi_slam/ may also be present)
+│   ├── iphone_1/ or iphone_1 (<color>)/
+│   │   └── <recording_location>_<interaction_indices>_hand/
+│   │       └── (same general iPhone structure; poses_aligned/ may also be present)
+│   └── iphone_2/ or iphone_2 (<color>)/
+│       └── (same general iPhone structure as iphone_1)
 ├── leica/
+│   ├── <recording_location>.json
 │   ├── <setup>/
-│   │    ├── images/
-│   │    ├── mesh/
-│   │    ├── points/
-│   │    ├── points_downsampled/
-│   │    └── (registration metadata)
-│   └── <recording_location>.json (articulation annotations in aligned frame)
-│
+│   │   ├── images/
+│   │   ├── points/
+│   │   ├── points_downsampled/
+│   │   ├── mesh/ (if present)
+│   │   ├── pano_tiles/ (if present)
+│   │   ├── instance_annotations/ (if present)
+│   │   └── instance_annotations_3d/ (if present)
+│   └── <additional setup directories>/
 ├── umi/
+│   ├── interaction_splitting_info_<interaction_indices>.json
+│   ├── interaction_splitting_info_<interaction_indices>_confirmed.json
 │   ├── aria_human/
+│   │   └── <recording_location>_<interaction_indices>_umi_vrs/
+│   │       └── (same general Aria structure; multi_slam/ may also be present)
 │   ├── iphone_1/
+│   │   └── <recording_location>_<interaction_indices>_umi/
+│   │       └── (same general iPhone structure as above)
 │   ├── iphone_2/
+│   │   └── <recording_location>_<interaction_indices>_umi/
+│   │       └── (same general iPhone structure as above)
 │   └── umi_gripper/
-│
+│       └── <recording_location>_<interaction_indices>_umi/
+│           ├── anonymization.json
+│           ├── time_sync_info.json
+│           ├── anonymization_cache/
+│           ├── calib/
+│           ├── camera_rgb/
+│           ├── odometry/
+│           ├── slam/
+│           ├── telemetry/
+│           └── visual_registration/
 └── wrist/
+    ├── interaction_splitting_info_<interaction_indices>.json
+    ├── interaction_splitting_info_<interaction_indices>_confirmed.json
     ├── aria_human/
+    │   └── <recording_location>_<interaction_indices>_wrist_vrs/
+    │       └── (same general Aria structure; multi_slam/ may also be present)
     ├── aria_wrist/
+    │   └── <recording_location>_<interaction_indices>_wrist_vrs/
+    │       └── (same general Aria structure as above)
     ├── iphone_1/
+    │   └── <recording_location>_<interaction_indices>_wrist/
+    │       └── (same general iPhone structure as above)
     └── iphone_2/
+        └── <recording_location>_<interaction_indices>_wrist/
+            └── (same general iPhone structure as above)
+
 ```
 
 ---
