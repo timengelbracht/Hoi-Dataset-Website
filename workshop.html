@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ECCV 2026 Workshop — Force-Grounded, Cross-View Articulated Manipulation</title>
+  <meta name="description" content="ECCV 2026 Workshop on Force-Grounded, Cross-View Articulated Manipulation. Call for papers, invited speakers, competition, and program.">
+
+  <link rel="icon" type="image/png" href="./static/images/TextHoi.png">
+
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+
+  <!-- Custom styles -->
+  <link rel="stylesheet" href="./static/css/style.css">
+
+  <style>
+    /* Workshop-specific styles */
+    .ws-hero {
+      background: linear-gradient(135deg, #0a0a12 0%, #1a1a2e 60%, #16213e 100%);
+      min-height: 52vh;
+      display: flex; align-items: center; justify-content: center;
+      text-align: center; padding: 4rem 2rem;
+      position: relative; overflow: hidden;
+    }
+    .ws-hero::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 60% 40%, rgba(232,116,97,0.12) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .ws-hero-content { position: relative; z-index: 1; max-width: 800px; }
+    .ws-badge {
+      display: inline-block; background: rgba(232,116,97,0.15);
+      border: 1px solid rgba(232,116,97,0.4); color: #E87461;
+      font-size: .75rem; font-weight: 700; letter-spacing: .08em;
+      text-transform: uppercase; padding: .3rem .85rem; border-radius: 999px;
+      margin-bottom: 1.2rem;
+    }
+    .ws-hero h1 {
+      font-size: 2.3rem; font-weight: 800; color: #fff;
+      line-height: 1.2; margin-bottom: 1rem;
+    }
+    .ws-hero h1 .accent { color: #E87461; }
+    .ws-hero .subtitle {
+      font-size: 1rem; color: #aaa; max-width: 580px; margin: 0 auto 1.8rem;
+    }
+    .ws-meta {
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 1.2rem;
+      margin-bottom: 1.8rem;
+    }
+    .ws-meta-item {
+      display: flex; align-items: center; gap: .4rem;
+      font-size: .82rem; color: #ccc;
+    }
+    .ws-meta-item i { color: #E87461; }
+
+    /* Keywords */
+    .keyword-row { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .8rem; }
+    .keyword {
+      font-size: .72rem; font-weight: 600; padding: .2rem .6rem; border-radius: 999px;
+      background: rgba(232,116,97,0.08); border: 1px solid rgba(232,116,97,0.2); color: #E87461;
+    }
+
+    /* Dates table */
+    .dates-table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+    .dates-table tr { border-bottom: 1px solid rgba(0,0,0,0.06); }
+    .dates-table tr:last-child { border-bottom: none; }
+    .dates-table td { padding: .65rem .5rem; font-size: .9rem; }
+    .dates-table td:first-child { font-weight: 600; color: #111; width: 65%; }
+    .dates-table td:last-child { color: #E87461; font-weight: 700; white-space: nowrap; }
+
+    /* Speakers */
+    .speaker-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1.5rem; margin-top: 1.2rem;
+    }
+    .speaker-card {
+      background: rgba(255,255,255,0.02); border: 1px solid rgba(0,0,0,0.07);
+      border-radius: 12px; padding: 1.2rem; transition: border-color .3s;
+    }
+    .speaker-card:hover { border-color: rgba(232,116,97,0.3); }
+    .speaker-top { display: flex; align-items: center; gap: .9rem; margin-bottom: .8rem; }
+    .speaker-avatar {
+      width: 64px; height: 64px; border-radius: 50%; flex-shrink: 0;
+      background: rgba(232,116,97,0.08);
+      border: 2px solid rgba(232,116,97,0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem; color: rgba(232,116,97,0.4); overflow: hidden;
+    }
+    .speaker-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .speaker-name { font-size: .9rem; font-weight: 700; color: #111; }
+    .speaker-affil { font-size: .72rem; color: #666; margin-top: .1rem; }
+    .speaker-bio { font-size: .78rem; color: #444; line-height: 1.6; }
+    .confirmed-badge {
+      display: inline-block; font-size: .62rem; font-weight: 700;
+      background: rgba(52,211,153,0.1); border: 1px solid rgba(52,211,153,0.3);
+      color: #059669; padding: .1rem .45rem; border-radius: 4px;
+      text-transform: uppercase; letter-spacing: .06em; margin-top: .3rem;
+    }
+
+    /* Schedule */
+    .schedule-row {
+      display: flex; align-items: flex-start; gap: 1.2rem;
+      padding: .8rem 0; border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+    .schedule-row:last-child { border-bottom: none; }
+    .schedule-time {
+      min-width: 110px; font-size: .82rem; font-weight: 700; color: #E87461; padding-top: .1rem;
+    }
+    .schedule-event { font-size: .9rem; color: #111; font-weight: 500; }
+    .schedule-desc { font-size: .78rem; color: #555; margin-top: .1rem; }
+    .schedule-tag {
+      display: inline-block; font-size: .62rem; font-weight: 700;
+      padding: .1rem .45rem; border-radius: 4px; text-transform: uppercase;
+      letter-spacing: .06em; margin-left: .4rem; vertical-align: middle;
+    }
+    .stag-keynote { background: rgba(232,116,97,0.1); color: #E87461; }
+    .stag-oral { background: rgba(96,165,250,0.1); color: #60a5fa; }
+    .stag-break { background: rgba(0,0,0,0.05); color: #888; }
+    .stag-poster { background: rgba(52,211,153,0.1); color: #34d399; }
+    .stag-intro { background: rgba(167,139,250,0.1); color: #a78bfa; }
+
+    /* Competition */
+    .track-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin-top: 1rem; }
+    @media (max-width: 700px) { .track-grid { grid-template-columns: 1fr; } }
+    .track-card {
+      background: rgba(255,255,255,0.025); border: 1px solid rgba(232,116,97,0.15);
+      border-radius: 12px; padding: 1.2rem;
+    }
+    .track-card h4 { font-size: .95rem; font-weight: 700; color: #E87461; margin-bottom: .5rem; }
+    .track-card p, .track-card li { font-size: .84rem; color: #333; line-height: 1.7; }
+    .track-card ul { padding-left: 1.2rem; margin-top: .3rem; }
+
+    /* CFP */
+    .topic-list { list-style: none; padding: 0; margin-top: .8rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: .5rem; }
+    .topic-list li {
+      background: rgba(232,116,97,0.04); border: 1px solid rgba(232,116,97,0.12);
+      border-radius: 8px; padding: .55rem .8rem; font-size: .84rem; color: #333;
+      display: flex; align-items: flex-start; gap: .5rem;
+    }
+    .topic-list li i { color: #E87461; font-size: .8rem; margin-top: .15rem; flex-shrink: 0; }
+
+    /* Organizers */
+    .organizer-grid {
+      display: flex; flex-wrap: wrap; justify-content: flex-start;
+      gap: 1.5rem; margin-top: 1.2rem;
+    }
+    .organizer-card { text-align: center; width: 110px; color: inherit; text-decoration: none; }
+    .organizer-avatar {
+      width: 72px; height: 72px; border-radius: 50%;
+      background: rgba(232,116,97,0.08);
+      border: 2px solid rgba(232,116,97,0.15);
+      margin: 0 auto .5rem; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; color: rgba(232,116,97,0.4); transition: border-color .3s;
+    }
+    .organizer-card:hover .organizer-avatar { border-color: #E87461; }
+    .organizer-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .organizer-name { font-size: .75rem; font-weight: 700; color: #111; }
+    .organizer-role { font-size: .62rem; color: #E87461; font-weight: 600; margin-top: .1rem; }
+    .organizer-affil { font-size: .62rem; color: #666; }
+
+    /* Info / notice boxes */
+    .info-box {
+      background: rgba(232,116,97,0.04); border: 1px solid rgba(232,116,97,0.15);
+      border-radius: 12px; padding: 1.2rem 1.5rem;
+    }
+    .info-box p { font-size: .88rem; color: #333; line-height: 1.75; }
+    .notice {
+      background: rgba(255,220,50,0.06); border: 1px solid rgba(255,220,50,0.25);
+      border-radius: 8px; padding: .65rem 1rem; font-size: .8rem; color: #7a6800;
+      display: flex; gap: .5rem; align-items: flex-start; margin-top: 1rem;
+    }
+    .notice i { color: #c8a800; margin-top: .1rem; flex-shrink: 0; }
+
+    @media (max-width: 700px) {
+      .ws-hero h1 { font-size: 1.6rem; }
+      .speaker-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Mobile sidebar toggle -->
+<button class="sidebar-toggle" aria-label="Toggle navigation">
+  <i class="fas fa-bars"></i>
+</button>
+
+<!-- ===== SIDEBAR ===== -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <img src="./static/images/TextHoi.png" alt="Hoi!"
+         onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+    <div style="display:none; font-size:2rem; font-weight:800; color:#E87461; text-align:center; padding:.5rem 0;">Hoi!</div>
+  </div>
+  <div class="sidebar-subtitle">ECCV 2026 Workshop</div>
+  <nav>
+    <a href="#ws-hero" class="active"><i class="fas fa-home" style="width:18px"></i> Overview</a>
+    <a href="#ws-dates"><i class="fas fa-calendar-alt" style="width:18px"></i> Important Dates</a>
+    <a href="#ws-cfp"><i class="fas fa-file-alt" style="width:18px"></i> Call for Papers</a>
+    <a href="#ws-speakers"><i class="fas fa-microphone" style="width:18px"></i> Speakers</a>
+    <a href="#ws-challenge"><i class="fas fa-trophy" style="width:18px"></i> Challenge</a>
+    <a href="#ws-schedule"><i class="fas fa-clock" style="width:18px"></i> Schedule</a>
+    <a href="#ws-organizers"><i class="fas fa-users" style="width:18px"></i> Organizers</a>
+    <div style="margin: .6rem 0; border-top: 1px solid rgba(255,255,255,0.07);"></div>
+    <a href="./index.html"><i class="fas fa-database" style="width:18px"></i> Hoi! Dataset</a>
+  </nav>
+  <div style="margin-top:auto; padding-top:.8rem; border-top:1px solid rgba(255,255,255,0.05);">
+    <a href="https://arxiv.org/abs/2512.04884" target="_blank" rel="noopener" style="font-size:.78rem; display:flex; align-items:center; gap:.4rem; color:#777; padding:.3rem .6rem;">
+      <i class="ai ai-arxiv" style="font-size:.95rem;"></i> Paper (ArXiv)
+    </a>
+  </div>
+</aside>
+
+<!-- ===== MAIN CONTENT ===== -->
+<div class="main">
+
+  <!-- HERO -->
+  <section class="ws-hero" id="ws-hero">
+    <div class="ws-hero-content">
+      <div class="ws-badge"><i class="fas fa-star" style="margin-right:.4rem"></i>ECCV 2026 Workshop</div>
+      <h1>Force-Grounded, <span class="accent">Cross-View</span><br>Articulated Manipulation</h1>
+      <p class="subtitle">Bridging what is <strong style="color:#E87461">seen</strong>, what is <strong style="color:#E87461">done</strong>, and what is <strong style="color:#E87461">felt</strong> — towards multimodal, physically grounded human-robot interaction understanding.</p>
+      <div class="ws-meta">
+        <span class="ws-meta-item"><i class="fas fa-map-marker-alt"></i> Malmö, Sweden · ECCV 2026</span>
+        <span class="ws-meta-item"><i class="fas fa-clock"></i> Half-day workshop</span>
+        <span class="ws-meta-item"><i class="fas fa-envelope"></i> <a href="mailto:zbauer@ethz.ch" style="color:#ccc;">zbauer@ethz.ch</a></span>
+      </div>
+      <div class="btn-row">
+        <a href="#ws-cfp" class="btn btn-primary"><i class="fas fa-file-alt"></i> Call for Papers</a>
+        <a href="#ws-challenge" class="btn btn-primary"><i class="fas fa-trophy"></i> Challenge</a>
+        <a href="#ws-dates" class="btn btn-dark"><i class="fas fa-calendar-alt"></i> Important Dates</a>
+        <a href="./index.html" class="btn btn-dark"><i class="fas fa-database"></i> Hoi! Dataset</a>
+      </div>
+      <div class="keyword-row" style="justify-content:center; margin-top:1.2rem;">
+        <span class="keyword">Human-Object Interaction</span>
+        <span class="keyword">Articulated Manipulation</span>
+        <span class="keyword">Multimodal Sensing</span>
+        <span class="keyword">Force Estimation</span>
+        <span class="keyword">Egocentric AI</span>
+        <span class="keyword">Robot Learning</span>
+        <span class="keyword">Dexterous Grasping</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="section" id="ws-about">
+    <h2 class="section-title">About the <span class="accent">Workshop</span></h2>
+    <div class="section-divider"></div>
+    <div class="info-box">
+      <p>
+        Providing robots with the ability to manipulate articulated objects — doors, drawers, tools, containers — remains a central challenge in robotics. A key bottleneck is the lack of large-scale, multimodal datasets that simultaneously capture <strong>what is seen, what is done, and what is felt</strong> during real physical interaction. Especially touch, tactility, and force feedback are so far underrepresented in available datasets and methods, yet critical for robust robotic deployment.
+      </p>
+      <br>
+      <p>
+        This workshop brings together the manipulation, egocentric vision, and robot learning communities to discuss emerging challenges in force-grounded, cross-view articulated manipulation. As a focus point, we host a public challenge based on the <a href="./index.html" style="color:#E87461; font-weight:600;">Hoi! dataset</a>, which directly addresses challenges in embodiment transfer and force-grounding by providing synchronized visual, force, and tactile streams across human and robot embodiments.
+      </p>
+    </div>
+    <div style="margin-top:1.5rem; display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1rem;">
+      <div style="background:#f8f8f8; border-radius:10px; padding:1rem 1.2rem; border:1px solid rgba(0,0,0,0.07);">
+        <div style="font-size:1.4rem; color:#E87461; margin-bottom:.3rem;"><i class="fas fa-calendar-check"></i></div>
+        <div style="font-size:.85rem; font-weight:700; color:#111;">Half-day Event</div>
+        <div style="font-size:.78rem; color:#555; margin-top:.2rem;">In-person with hybrid remote access via Zoom for registered participants.</div>
+      </div>
+      <div style="background:#f8f8f8; border-radius:10px; padding:1rem 1.2rem; border:1px solid rgba(0,0,0,0.07);">
+        <div style="font-size:1.4rem; color:#E87461; margin-bottom:.3rem;"><i class="fas fa-microphone"></i></div>
+        <div style="font-size:.85rem; font-weight:700; color:#111;">4 Keynote Speakers</div>
+        <div style="font-size:.78rem; color:#555; margin-top:.2rem;">To be announced.</div>
+      </div>
+      <div style="background:#f8f8f8; border-radius:10px; padding:1rem 1.2rem; border:1px solid rgba(0,0,0,0.07);">
+        <div style="font-size:1.4rem; color:#E87461; margin-bottom:.3rem;"><i class="fas fa-trophy"></i></div>
+        <div style="font-size:.85rem; font-weight:700; color:#111;">Dataset Challenge</div>
+        <div style="font-size:.78rem; color:#555; margin-top:.2rem;">Two competition tracks on articulation estimation and force prediction.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- IMPORTANT DATES -->
+  <section class="section" id="ws-dates">
+    <h2 class="section-title">Important <span class="accent">Dates</span></h2>
+    <div class="section-divider"></div>
+    <p style="font-size:.85rem; color:#555; margin-bottom:.8rem;">All deadlines are 23:59 AoE (Anywhere on Earth).</p>
+
+    <h3 style="font-size:.95rem; font-weight:700; color:#111; margin-bottom:.4rem; margin-top:1rem;">Paper Submission</h3>
+    <table class="dates-table">
+      <tbody>
+        <tr>
+          <td>Submission opens</td>
+          <td>May 1, 2026</td>
+        </tr>
+        <tr>
+          <td>Submission deadline</td>
+          <td>June 20, 2026</td>
+        </tr>
+        <tr>
+          <td>Notification to authors</td>
+          <td>July 11, 2026</td>
+        </tr>
+        <tr>
+          <td>Camera-ready deadline</td>
+          <td>July 25, 2026</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 style="font-size:.95rem; font-weight:700; color:#111; margin-bottom:.4rem; margin-top:1.5rem;">Competition</h3>
+    <table class="dates-table">
+      <tbody>
+        <tr>
+          <td>Competition opens</td>
+          <td>July 1, 2026</td>
+        </tr>
+        <tr>
+          <td>Submission deadline</td>
+          <td>Aug. 15, 2026</td>
+        </tr>
+        <tr>
+          <td>Decisions to participants</td>
+          <td>Sept. 1, 2026</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- CALL FOR PAPERS -->
+  <section class="section" id="ws-cfp">
+    <h2 class="section-title">Call for <span class="accent">Papers</span></h2>
+    <div class="section-divider"></div>
+
+    <div class="info-box" style="margin-bottom:1.5rem;">
+      <p>
+        We welcome submissions on topics related to force-grounded manipulation, tactile sensing, and interaction understanding. The workshop accepts <strong>full-length papers (8 pages)</strong> and <strong>extended abstracts (4 pages)</strong>, excluding references, in ECCV 2026 format. Authors of accepted submissions will be invited to present at the poster session. Accepted full-length papers will be included in the workshop proceedings. Submissions must be <strong>anonymized</strong> for double-blind review.
+      </p>
+    </div>
+
+    <h3 style="font-size:1rem; font-weight:700; margin-bottom:.6rem; color:#111;">Topics of Interest</h3>
+    <ul class="topic-list">
+      <li><i class="fas fa-chevron-right"></i> Human-Object Interaction &amp; articulated objects</li>
+      <li><i class="fas fa-chevron-right"></i> Force &amp; tactile sensing for manipulation</li>
+      <li><i class="fas fa-chevron-right"></i> Egocentric video understanding</li>
+      <li><i class="fas fa-chevron-right"></i> Dexterous grasping &amp; in-hand manipulation</li>
+      <li><i class="fas fa-chevron-right"></i> Cross-view and cross-embodiment learning</li>
+      <li><i class="fas fa-chevron-right"></i> Robot learning from human demonstration</li>
+      <li><i class="fas fa-chevron-right"></i> Force and torque prediction from video</li>
+      <li><i class="fas fa-chevron-right"></i> Physics-informed video models</li>
+      <li><i class="fas fa-chevron-right"></i> Multimodal datasets &amp; benchmarks for manipulation</li>
+      <li><i class="fas fa-chevron-right"></i> Foundation models for robotic manipulation</li>
+      <li><i class="fas fa-chevron-right"></i> Affordance, contact estimation &amp; action anticipation</li>
+      <li><i class="fas fa-chevron-right"></i> Embodied AI &amp; sim-to-real transfer</li>
+    </ul>
+
+    <div style="margin-top:1.5rem; padding:1rem 1.2rem; background:#f8f8f8; border-radius:10px; border:1px solid rgba(0,0,0,0.07);">
+      <h4 style="font-size:.9rem; font-weight:700; margin-bottom:.5rem; color:#111;">Submission Guidelines</h4>
+      <ul style="font-size:.85rem; color:#444; padding-left:1.3rem; line-height:1.9;">
+        <li>Follow the official <strong>ECCV 2026 author kit</strong>.</li>
+        <li><strong>Full papers:</strong> up to 8 pages of content + unlimited pages for references. Included in proceedings.</li>
+        <li><strong>Extended abstracts:</strong> up to 4 pages of content + references. Non-archival.</li>
+        <li>Submissions must be <strong>anonymized</strong> (double-blind review).</li>
+        <li>All accepted submissions will be invited for a poster presentation; top papers may be selected for oral spotlight talks.</li>
+        <li>All accepted authors will be asked to provide a 5-minute spotlight video for the workshop website.</li>
+      </ul>
+    </div>
+    <div class="notice">
+      <i class="fas fa-info-circle"></i>
+      <span>The submission portal opens <strong>May 1, 2026</strong>. A direct link will be posted here once available. Contact <a href="mailto:zbauer@ethz.ch" style="color:#8a6f00; font-weight:600;">zbauer@ethz.ch</a> with questions.</span>
+    </div>
+  </section>
+
+  <!-- INVITED SPEAKERS -->
+  <section class="section" id="ws-speakers">
+    <h2 class="section-title">Invited <span class="accent">Speakers</span></h2>
+    <div class="section-divider"></div>
+    <p style="font-size:.88rem; color:#555; margin-bottom:1rem;">Speakers will be announced soon.</p>
+
+    <div class="speaker-grid">
+      <div class="speaker-card" style="opacity:.6;">
+        <div class="speaker-top">
+          <div class="speaker-avatar"><i class="fas fa-user"></i></div>
+          <div>
+            <div class="speaker-name">Speaker TBD</div>
+            <div class="speaker-affil">Affiliation TBD</div>
+          </div>
+        </div>
+      </div>
+      <div class="speaker-card" style="opacity:.6;">
+        <div class="speaker-top">
+          <div class="speaker-avatar"><i class="fas fa-user"></i></div>
+          <div>
+            <div class="speaker-name">Speaker TBD</div>
+            <div class="speaker-affil">Affiliation TBD</div>
+          </div>
+        </div>
+      </div>
+      <div class="speaker-card" style="opacity:.6;">
+        <div class="speaker-top">
+          <div class="speaker-avatar"><i class="fas fa-user"></i></div>
+          <div>
+            <div class="speaker-name">Speaker TBD</div>
+            <div class="speaker-affil">Affiliation TBD</div>
+          </div>
+        </div>
+      </div>
+      <div class="speaker-card" style="opacity:.6;">
+        <div class="speaker-top">
+          <div class="speaker-avatar"><i class="fas fa-user"></i></div>
+          <div>
+            <div class="speaker-name">Speaker TBD</div>
+            <div class="speaker-affil">Affiliation TBD</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHALLENGE -->
+  <section class="section" id="ws-challenge">
+    <h2 class="section-title">Dataset <span class="accent">Challenge</span></h2>
+    <div class="section-divider"></div>
+    <div class="info-box" style="margin-bottom:1.2rem;">
+      <p>
+        The workshop challenge is centered around the <a href="./index.html" style="color:#E87461; font-weight:600;">Hoi! dataset</a> — the first large-scale benchmark to jointly capture visual, force, and tactile information across human and robot embodiments during articulated object manipulation. It contains <strong>3,048 sequences</strong> spanning <strong>381 articulated objects</strong> across <strong>38 indoor environments</strong>, recorded under four embodiments. The challenge evaluates how well methods leverage cross-view and multimodal signals to understand and predict articulated manipulation.
+      </p>
+    </div>
+
+    <div class="track-grid">
+      <div class="track-card">
+        <h4><i class="fas fa-sync-alt" style="margin-right:.4rem;"></i>Track 1 — Cross-View Articulation Estimation</h4>
+        <p>Estimate the parameters governing the manipulation action of an articulated object part across embodiment viewpoints (e.g., third-person to egocentric, human to robot).</p>
+        <ul>
+          <li><strong>Input:</strong> Any Hoi! video stream, excluding depth or poses.</li>
+          <li><strong>Metric:</strong> Revolute/Prismatic classification → Motion Axis estimation → Articulation Limits estimation (increasing difficulty).</li>
+        </ul>
+      </div>
+      <div class="track-card">
+        <h4><i class="fas fa-hand-rock" style="margin-right:.4rem;"></i>Track 2 — Force Estimation</h4>
+        <p>Estimate contact forces from video alone — targeting the underexplored problem of physical interaction understanding from vision.</p>
+        <ul>
+          <li><strong>Input:</strong> Egocentric interaction video.</li>
+          <li><strong>Metric:</strong> RMSE of the estimated interaction force during the demonstrated interaction.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div style="margin-top:1rem; padding:.8rem 1rem; background:#f8f8f8; border-radius:8px; border:1px solid rgba(0,0,0,0.07); font-size:.84rem; color:#444;">
+      <i class="fas fa-code" style="color:#E87461; margin-right:.4rem;"></i>
+      To be eligible for a prize, participants must provide code that can reproduce their results and commit to releasing it as <strong>open-source</strong>.
+    </div>
+    <div class="notice">
+      <i class="fas fa-calendar"></i>
+      <span>Competition opens <strong>July 1, 2026</strong> · Submission deadline <strong>Aug. 15, 2026</strong> · Results announced <strong>Sept. 1, 2026</strong></span>
+    </div>
+  </section>
+
+  <!-- SCHEDULE -->
+  <section class="section" id="ws-schedule">
+    <h2 class="section-title">Workshop <span class="accent">Schedule</span></h2>
+    <div class="section-divider"></div>
+    <p style="font-size:.88rem; color:#555; margin-bottom:1.2rem;">Preliminary half-day program. Times will be finalized closer to the event.</p>
+
+    <div>
+      <div class="schedule-row">
+        <div class="schedule-time">8:15 – 8:30</div>
+        <div>
+          <div class="schedule-event">Welcome &amp; Introduction<span class="schedule-tag stag-intro">Intro</span></div>
+          <div class="schedule-desc">Opening remarks and workshop overview by the organizers.</div>
+        </div>
+      </div>
+      <div class="schedule-row">
+        <div class="schedule-time">8:30 – 9:15</div>
+        <div>
+          <div class="schedule-event">Keynote 1<span class="schedule-tag stag-keynote">Keynote</span></div>
+          <div class="schedule-desc">Speaker TBD</div>
+        </div>
+      </div>
+      <div class="schedule-row">
+        <div class="schedule-time">9:15 – 10:00</div>
+        <div>
+          <div class="schedule-event">Keynote 2<span class="schedule-tag stag-keynote">Keynote</span></div>
+          <div class="schedule-desc">Speaker TBD</div>
+        </div>
+      </div>
+      <div class="schedule-row">
+        <div class="schedule-time">10:00 – 10:30</div>
+        <div>
+          <div class="schedule-event">Oral Spotlights + Challenge Winners<span class="schedule-tag stag-oral">Orals</span></div>
+          <div class="schedule-desc">2 oral spotlight presentations from accepted papers, followed by challenge winner announcements.</div>
+        </div>
+      </div>
+      <div class="schedule-row">
+        <div class="schedule-time">10:30 – 11:00</div>
+        <div>
+          <div class="schedule-event">Poster Session &amp; Coffee Break<span class="schedule-tag stag-poster">Posters</span><span class="schedule-tag stag-break">Break</span></div>
+          <div class="schedule-desc">Interactive poster session with coffee.</div>
+        </div>
+      </div>
+      <div class="schedule-row">
+        <div class="schedule-time">11:00 – 11:45</div>
+        <div>
+          <div class="schedule-event">Keynote 3<span class="schedule-tag stag-keynote">Keynote</span></div>
+          <div class="schedule-desc">Speaker TBD</div>
+        </div>
+      </div>
+      <div class="schedule-row">
+        <div class="schedule-time">11:45 – 12:30</div>
+        <div>
+          <div class="schedule-event">Keynote 4<span class="schedule-tag stag-keynote">Keynote</span></div>
+          <div class="schedule-desc">Speaker TBD</div>
+        </div>
+      </div>
+      <div class="schedule-row">
+        <div class="schedule-time">12:30 – 12:40</div>
+        <div>
+          <div class="schedule-event">Closing Remarks<span class="schedule-tag stag-intro">Closing</span></div>
+          <div class="schedule-desc">Awards, acknowledgements, and wrap-up.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ORGANIZERS -->
+  <section class="section" id="ws-organizers">
+    <h2 class="section-title"><span class="accent">Organizers</span></h2>
+    <div class="section-divider"></div>
+    <p style="font-size:.85rem; color:#555; margin-bottom:.5rem;">Contact: <a href="mailto:zbauer@ethz.ch" style="color:#E87461; font-weight:600;">Zuria Bauer — zbauer@ethz.ch</a></p>
+
+    <div class="organizer-grid">
+      <a href="https://zuriabauer.com/" target="_blank" class="organizer-card">
+        <div class="organizer-avatar"><img src="https://zuriabauer.com/assets/images/ZBauer.png" alt="Zuria Bauer" loading="lazy"></div>
+        <div class="organizer-name">Zuria Bauer</div>
+        <div class="organizer-role">Postdoc</div>
+        <div class="organizer-affil">ETH Zurich</div>
+      </a>
+      <a href="https://hermannblum.net/" target="_blank" class="organizer-card">
+        <div class="organizer-avatar"><img src="./static/images/HermanBlum.jpeg" alt="Hermann Blum" loading="lazy"></div>
+        <div class="organizer-name">Hermann Blum</div>
+        <div class="organizer-role">Asst. Professor</div>
+        <div class="organizer-affil">U. Bonn</div>
+      </a>
+      <a href="https://rl.uni-freiburg.de/people/valada" target="_blank" class="organizer-card">
+        <div class="organizer-avatar"><img src="https://rl.uni-freiburg.de/img/people/valada_page" alt="Abhinav Valada" loading="lazy"></div>
+        <div class="organizer-name">Abhinav Valada</div>
+        <div class="organizer-role">Professor</div>
+        <div class="organizer-affil">U. Freiburg</div>
+      </a>
+      <a href="https://www.professoren.tum.de/leutenegger-stefan" target="_blank" class="organizer-card">
+        <div class="organizer-avatar"><i class="fas fa-user"></i></div>
+        <div class="organizer-name">Stefan Leutenegger</div>
+        <div class="organizer-role">Professor</div>
+        <div class="organizer-affil">ETH Zurich</div>
+      </a>
+      <a href="https://rsl.ethz.ch/the-lab/people/person-detail.MTIxOTEx.TGlzdC8yNDQxLC0xNDI1MTk1NzM1.html" target="_blank" class="organizer-card">
+        <div class="organizer-avatar"><i class="fas fa-user"></i></div>
+        <div class="organizer-name">Marco Hutter</div>
+        <div class="organizer-role">Professor</div>
+        <div class="organizer-affil">ETH Zurich &amp; RAI</div>
+      </a>
+      <a href="https://people.inf.ethz.ch/marc.pollefeys/" target="_blank" class="organizer-card">
+        <div class="organizer-avatar"><img src="https://people.inf.ethz.ch/marc.pollefeys/pics/marc.jpg" alt="Marc Pollefeys" loading="lazy"></div>
+        <div class="organizer-name">Marc Pollefeys</div>
+        <div class="organizer-role">Professor &amp; Director</div>
+        <div class="organizer-affil">ETH / Microsoft</div>
+      </a>
+      <a href="https://rl.uni-freiburg.de/people/buechner" target="_blank" class="organizer-card">
+        <div class="organizer-avatar"><img src="./static/images/MartinBuchner.jpeg" alt="Martin Büchner" loading="lazy"></div>
+        <div class="organizer-name">Martin Büchner</div>
+        <div class="organizer-role">PhD Student</div>
+        <div class="organizer-affil">U. Freiburg</div>
+      </a>
+      <a href="https://renezurbruegg.github.io/" target="_blank" class="organizer-card">
+        <div class="organizer-avatar"><img src="https://renezurbruegg.github.io/assets/img/avatar.jpeg" alt="René Zurbrügg" loading="lazy"></div>
+        <div class="organizer-name">René Zurbrügg</div>
+        <div class="organizer-role">PhD Student</div>
+        <div class="organizer-affil">ETH Zurich</div>
+      </a>
+      <a href="#" class="organizer-card">
+        <div class="organizer-avatar"><i class="fas fa-user"></i></div>
+        <div class="organizer-name">Tifanny Portela</div>
+        <div class="organizer-role">PhD Student</div>
+        <div class="organizer-affil">ETH Zurich</div>
+      </a>
+      <a href="#" class="organizer-card">
+        <div class="organizer-avatar"><i class="fas fa-user"></i></div>
+        <div class="organizer-name">Gülhan Sikaroglu</div>
+        <div class="organizer-role">PhD Student</div>
+        <div class="organizer-affil">U. Bonn</div>
+      </a>
+      <a href="https://www.linkedin.com/in/timengelbracht/" target="_blank" class="organizer-card">
+        <div class="organizer-avatar"><img src="./static/images/TimEngelbracht.jpeg" alt="Tim Engelbracht" loading="lazy"></div>
+        <div class="organizer-name">Tim Engelbracht</div>
+        <div class="organizer-role">Master Student</div>
+        <div class="organizer-affil">ETH Zurich</div>
+      </a>
+    </div>
+  </section>
+
+  <!-- AFFILIATIONS -->
+  <section class="section" id="ws-affiliations">
+    <div class="affil-logos">
+      <img src="./static/images/ETH_Zurich.png" alt="ETH Zurich">
+      <img src="./static/images/UFR.png" alt="University of Freiburg">
+      <img src="./static/images/Universitat_Bonn.png" alt="University of Bonn">
+      <img src="./static/images/microsoft.webp" alt="Microsoft">
+    </div>
+  </section>
+
+</div>
+
+<footer class="footer">
+  ECCV 2026 Workshop on Force-Grounded, Cross-View Articulated Manipulation &middot;
+  Part of the <a href="./index.html" style="color:#E87461;">Hoi! Dataset</a> project &middot; ETH Zurich and collaborators
+</footer>
+
+<script>
+const toggle = document.querySelector('.sidebar-toggle');
+const sidebar = document.querySelector('.sidebar');
+if (toggle && sidebar) {
+  toggle.addEventListener('click', () => sidebar.classList.toggle('open'));
+}
+
+const sections = document.querySelectorAll('[id^="ws-"]');
+const navLinks = document.querySelectorAll('.sidebar nav a');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navLinks.forEach(l => l.classList.remove('active'));
+      const link = document.querySelector(`.sidebar nav a[href="#${e.target.id}"]`);
+      if (link) link.classList.add('active');
+    }
+  });
+}, { threshold: 0.25 });
+sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>
