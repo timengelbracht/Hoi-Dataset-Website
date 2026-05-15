@@ -224,7 +224,7 @@
     <div class="ws-hero-content">
       <div class="ws-badge"><i class="fas fa-star" style="margin-right:.4rem"></i>ECCV 2026 Workshop</div>
       <h1>Force-Grounded, <span class="accent">Cross-View</span><br>Articulated Manipulation</h1>
-      <p class="subtitle">Bridging what is <strong style="color:#E87461">seen</strong>, what is <strong style="color:#E87461">done</strong>, and what is <strong style="color:#E87461">felt</strong> — towards multimodal, physically grounded human-robot interaction understanding.</p>
+      <p class="subtitle">Bridging what is <strong style="color:#E87461">seen</strong>, what is <strong style="color:#E87461">done</strong>, and what is <strong style="color:#E87461">felt</strong> for multimodal, physically grounded human-robot interaction.</p>
       <div class="ws-meta">
         <span class="ws-meta-item"><i class="fas fa-map-marker-alt"></i> Malmö, Sweden · ECCV 2026</span>
         <span class="ws-meta-item"><i class="fas fa-clock"></i> Half-day workshop</span>
@@ -237,13 +237,10 @@
         <a href="./index.html" class="btn btn-dark"><i class="fas fa-database"></i> Hoi! Dataset</a>
       </div>
       <div class="keyword-row" style="justify-content:center; margin-top:1.2rem;">
-        <span class="keyword">Human-Object Interaction</span>
         <span class="keyword">Articulated Manipulation</span>
-        <span class="keyword">Multimodal Sensing</span>
-        <span class="keyword">Force Estimation</span>
+        <span class="keyword">Force &amp; Tactile Sensing</span>
         <span class="keyword">Egocentric AI</span>
         <span class="keyword">Robot Learning</span>
-        <span class="keyword">Dexterous Grasping</span>
       </div>
     </div>
   </section>
@@ -254,7 +251,7 @@
     <div class="section-divider"></div>
     <div class="info-box">
       <p>
-        Providing robots with the ability to manipulate articulated objects — doors, drawers, tools, containers — remains a central challenge in robotics. A key bottleneck is the lack of large-scale, multimodal datasets that simultaneously capture <strong>what is seen, what is done, and what is felt</strong> during real physical interaction. Especially touch, tactility, and force feedback are so far underrepresented in available datasets and methods, yet critical for robust robotic deployment.
+        Providing robots with the ability to manipulate articulated objects (doors, drawers, tools, containers) remains a central challenge in robotics. A key bottleneck is the lack of large-scale, multimodal datasets that simultaneously capture <strong>what is seen, what is done, and what is felt</strong> during real physical interaction. Especially touch, tactility, and force feedback are so far underrepresented in available datasets and methods, yet critical for robust robotic deployment.
       </p>
       <br>
       <p>
@@ -423,25 +420,25 @@
     <div class="section-divider"></div>
     <div class="info-box" style="margin-bottom:1.2rem;">
       <p>
-        The workshop challenge is centered around the <a href="./index.html" style="color:#E87461; font-weight:600;">Hoi! dataset</a> — the first large-scale benchmark to jointly capture visual, force, and tactile information across human and robot embodiments during articulated object manipulation. It contains <strong>3,048 sequences</strong> spanning <strong>381 articulated objects</strong> across <strong>38 indoor environments</strong>, recorded under four embodiments. The challenge evaluates how well methods leverage cross-view and multimodal signals to understand and predict articulated manipulation.
+        The workshop challenge is centered around the <a href="./index.html" style="color:#E87461; font-weight:600;">Hoi! dataset</a>, the first large-scale benchmark to jointly capture visual, force, and tactile information across human and robot embodiments during articulated object manipulation. It contains <strong>3,048 sequences</strong> spanning <strong>381 articulated objects</strong> across <strong>38 indoor environments</strong>, recorded under four embodiments. The challenge evaluates how well methods leverage cross-view and multimodal signals to understand and predict articulated manipulation.
       </p>
     </div>
 
     <div class="track-grid">
       <div class="track-card">
-        <h4><i class="fas fa-sync-alt" style="margin-right:.4rem;"></i>Track 1 — Cross-View Articulation Estimation</h4>
-        <p>Estimate the parameters governing the manipulation action of an articulated object part across embodiment viewpoints (e.g., third-person to egocentric, human to robot).</p>
+        <h4><i class="fas fa-sync-alt" style="margin-right:.4rem;"></i>T1 — Cross-View Articulation Estimation</h4>
+        <p>Participants develop methods to estimate the parameters governing the manipulation action of an articulated object part across embodiment viewpoints (e.g., third-person to egocentric, human to robot). Models may use any combination of provided visual streams.</p>
         <ul>
-          <li><strong>Input:</strong> Any Hoi! video stream, excluding depth or poses.</li>
-          <li><strong>Metric:</strong> Revolute/Prismatic classification → Motion Axis estimation → Articulation Limits estimation (increasing difficulty).</li>
+          <li><strong>Method Input:</strong> Any Hoi! video stream, excluding depth or poses.</li>
+          <li><strong>Target Metric:</strong> Revolute/Prismatic classification, Motion Axis estimation, Articulation Limits estimation (increasing difficulty).</li>
         </ul>
       </div>
       <div class="track-card">
-        <h4><i class="fas fa-hand-rock" style="margin-right:.4rem;"></i>Track 2 — Force Estimation</h4>
-        <p>Estimate contact forces from video alone — targeting the underexplored problem of physical interaction understanding from vision.</p>
+        <h4><i class="fas fa-hand-rock" style="margin-right:.4rem;"></i>T2 — Force Estimation</h4>
+        <p>Participants develop methods to estimate contact forces from video alone. This track targets the underexplored problem of physical interaction understanding from vision.</p>
         <ul>
-          <li><strong>Input:</strong> Egocentric interaction video.</li>
-          <li><strong>Metric:</strong> RMSE of the estimated interaction force during the demonstrated interaction.</li>
+          <li><strong>Method Input:</strong> Egocentric Interaction Video.</li>
+          <li><strong>Target Metric:</strong> RMSE of the estimated interaction force during the demonstrated interaction.</li>
         </ul>
       </div>
     </div>
@@ -526,7 +523,7 @@
   <section class="section" id="ws-organizers">
     <h2 class="section-title"><span class="accent">Organizers</span></h2>
     <div class="section-divider"></div>
-    <p style="font-size:.85rem; color:#555; margin-bottom:.5rem;">Contact: <a href="mailto:zbauer@ethz.ch" style="color:#E87461; font-weight:600;">Zuria Bauer — zbauer@ethz.ch</a></p>
+    <p style="font-size:.85rem; color:#555; margin-bottom:.5rem;">Contact: <a href="mailto:zbauer@ethz.ch" style="color:#E87461; font-weight:600;">Zuria Bauer (zbauer@ethz.ch)</a></p>
 
     <div class="organizer-grid">
       <a href="https://zuriabauer.com/" target="_blank" class="organizer-card">
