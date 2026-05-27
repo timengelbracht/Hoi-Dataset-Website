@@ -330,10 +330,10 @@
           sel.tree[type][mod] = fullyOn
             ? new Set()
             : new Set([...(modToStreams[mod] || [])]);
-          refreshModChk(type, mod);
           refreshModStreams(type, mod);
           refreshTypeChk(type);
           updateSummary();
+          setTimeout(() => refreshModChk(type, mod), 0);
         });
       }
 
@@ -350,8 +350,8 @@
             : new Set([...(modToStreams[mod] || [])]);
         }
         refreshTypeModules(type);
-        refreshTypeChk(type);
         updateSummary();
+        setTimeout(() => refreshTypeChk(type), 0);
       });
     }
   }
