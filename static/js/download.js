@@ -333,7 +333,7 @@
           refreshModStreams(type, mod);
           refreshTypeChk(type);
           updateSummary();
-          requestAnimationFrame(() => refreshModChk(type, mod));
+          setTimeout(() => refreshModChk(type, mod), 0);
         });
       }
 
@@ -351,7 +351,7 @@
         }
         refreshTypeModules(type);
         updateSummary();
-        requestAnimationFrame(() => refreshTypeChk(type));
+        setTimeout(() => refreshTypeChk(type), 0);
       });
     }
   }
