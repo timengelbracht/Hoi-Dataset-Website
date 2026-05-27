@@ -380,7 +380,7 @@
 
   // ─── Script generation ────────────────────────────────────────────────────
 
-  function generateScript(outputDir) {
+  function generateScript(outputDir, unzip) {
     const files     = getSelectedFiles();
     const totalSize = files.reduce((s, f) => s + f.size, 0);
     const date      = new Date().toISOString().split('T')[0];
@@ -415,6 +415,14 @@
     for (const loc of Object.keys(byLoc).sort()) {
       lines.push(`\necho "── ${loc} ──"`);
       for (const f of byLoc[loc]) lines.push(`dl ${f.id} "\${OUTPUT_DIR}/${f.path}"`);
+    }
+    if (unzip) {
+      lines.push(
+        '',
+        'echo "Unzipping archives..."',
+        `find "\${OUTPUT_DIR}" -name '*.zip' -exec sh -c 'unzip -q "$1" -d "$(dirname "$1")" && rm "$1"' _ {} \\;`,
+        'echo "Extraction complete."',
+      );
     }
     lines.push('\necho\necho "Done."');
     return lines.join('\n');
@@ -465,9 +473,10 @@
 
     document.getElementById('dl-generate')?.addEventListener('click', () => {
       const outDir = document.getElementById('dl-output').value.trim();
+      const unzip  = document.getElementById('dl-unzip')?.checked ?? false;
       const pre    = document.getElementById('dl-script');
       const area   = document.getElementById('dl-script-area');
-      pre.textContent    = generateScript(outDir);
+      pre.textContent    = generateScript(outDir, unzip);
       area.style.display = 'block';
       area.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
