@@ -260,16 +260,75 @@
 
   <!-- DOWNLOAD -->
   <section class="section" id="download">
-    <h2 class="section-title">Download</h2>
+    <h2 class="section-title">Download the <span class="accent">Dataset</span></h2>
     <div class="section-divider"></div>
-    <p style="color:#888; margin-bottom:1.2rem; font-size:.9rem;">Full dataset and code coming soon. Example data available now.</p>
-    <div class="btn-row" style="justify-content:flex-start;">
-      <a href="https://drive.google.com/drive/folders/1Hzpt5WXFbUg0CNVU7gudH-4z-HkC6kGR" target="_blank" rel="noopener" class="btn btn-primary">
-        <i class="fas fa-folder-open"></i> Example Data
-      </a>
-      <a href="#" class="btn btn-disabled" onclick="return false"><i class="fas fa-database"></i> Full Dataset — Soon</a>
-      <a href="#" class="btn btn-disabled" onclick="return false"><i class="fab fa-github"></i> Code — Soon</a>
+
+    <!-- Loading state -->
+    <div id="dl-loading" class="dl-status">
+      <i class="fas fa-spinner fa-spin"></i> Loading dataset index…
     </div>
+
+    <!-- Error state -->
+    <div id="dl-error" class="dl-status dl-status-error" style="display:none">
+      <i class="fas fa-exclamation-triangle"></i>
+      Could not load dataset index: <span id="dl-error-msg"></span>
+    </div>
+
+    <!-- Main UI (hidden until data loads) -->
+    <div id="dl-ui" style="display:none">
+
+      <!-- Filter grid: locations | tree -->
+      <div class="dl-grid">
+
+        <div class="dl-col">
+          <div class="dl-col-header">
+            <span><i class="fas fa-map-marker-alt"></i> Locations</span>
+            <button id="dl-all-loc" class="dl-toggle-all">Toggle all</button>
+          </div>
+          <div id="dl-locations" class="dl-cb-group"></div>
+        </div>
+
+        <div class="dl-tree-col">
+          <div class="dl-col-header">
+            <span><i class="fas fa-sitemap"></i> Recording Types · Modules · Streams</span>
+          </div>
+          <div id="dl-tree" class="dl-tree"></div>
+        </div>
+
+      </div><!-- /.dl-grid -->
+
+      <!-- Summary + generate bar -->
+      <div class="dl-bar">
+        <span class="dl-bar-info">
+          <strong id="dl-size">—</strong> across <strong id="dl-count">—</strong> files selected
+        </span>
+        <div class="dl-bar-actions">
+          <button id="dl-generate" class="btn btn-primary" style="font-size:.85rem; padding:.5rem 1.2rem;">
+            <i class="fas fa-file-code"></i> Generate Script
+          </button>
+        </div>
+      </div>
+
+      <!-- Script config -->
+      <div class="dl-config">
+        <div class="dl-config-field">
+          <label for="dl-output"><i class="fas fa-folder-open"></i> Output directory</label>
+          <input id="dl-output" type="text" value="./hoi_dataset">
+        </div>
+      </div>
+
+      <!-- Generated script -->
+      <div id="dl-script-area" style="display:none">
+        <div class="dl-script-header">
+          <span><i class="fas fa-terminal"></i> download_hoi.sh</span>
+          <button id="dl-copy" class="dl-copy-btn">
+            <i class="fas fa-copy"></i> Copy
+          </button>
+        </div>
+        <pre id="dl-script" class="dl-script-pre"></pre>
+      </div>
+
+    </div><!-- /#dl-ui -->
   </section>
 
   <!-- TEAM -->
@@ -346,6 +405,8 @@
 
 <!-- Main JavaScript -->
 <script src="./static/js/main.js"></script>
+<!-- Download Tool -->
+<script src="./static/js/download.js"></script>
 
 <!-- Intro Animation -->
 <script type="module">
