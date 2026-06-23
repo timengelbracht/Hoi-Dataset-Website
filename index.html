@@ -33,7 +33,7 @@
 </head>
 <body>
 
-<!-- ===== INTRO OVERLAY ===== -->
+<!-- ===== INTRO OVERLAY (disabled — uncomment to restore) =====
 <div id="intro-overlay">
   <canvas id="intro-canvas"></canvas>
   <div id="intro-fade"></div>
@@ -43,6 +43,7 @@
   </div>
   <button id="intro-skip">Skip <i class="fas fa-chevron-down"></i></button>
 </div>
+===== END INTRO OVERLAY ===== -->
 
 <!-- Mobile sidebar toggle -->
 <button class="sidebar-toggle" aria-label="Toggle navigation">
@@ -459,7 +460,7 @@
 <!-- Download Tool -->
 <script src="./static/js/download.js"></script>
 
-<!-- Intro Animation -->
+<!-- Intro Animation (disabled — uncomment to restore, also uncomment the overlay div above)
 <script type="module">
 import * as THREE from 'three';
 import { PLYLoader } from 'three/addons/loaders/PLYLoader.js';
@@ -621,6 +622,7 @@ loader.load('./static/InTheWild/Kitchen/Leica/points_voxel_0.010.ply?v=2', (geom
   })();
 });
 </script>
+End Intro Animation -->
 
 <!-- Three.js Point Cloud Viewer -->
 <script type="module">
