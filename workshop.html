@@ -134,6 +134,27 @@
     .track-card h4 { font-size: .95rem; font-weight: 700; color: #E87461; margin-bottom: .5rem; }
     .track-card p, .track-card li { font-size: .84rem; color: #333; line-height: 1.7; }
     .track-card ul { padding-left: 1.2rem; margin-top: .3rem; }
+    .challenge-actions { display: flex; flex-wrap: wrap; gap: .55rem; margin: 1rem 0 1.2rem; }
+    .challenge-note-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: .8rem; margin-top: 1rem;
+    }
+    .challenge-note {
+      background: #f8f8f8; border: 1px solid rgba(0,0,0,0.07);
+      border-radius: 8px; padding: .85rem 1rem;
+    }
+    .challenge-note h4 {
+      font-size: .85rem; font-weight: 700; color: #111; margin-bottom: .35rem;
+      display: flex; align-items: center; gap: .45rem;
+    }
+    .challenge-note h4 i { color: #E87461; }
+    .challenge-note p, .challenge-note li { font-size: .8rem; color: #444; line-height: 1.65; }
+    .challenge-note ul { padding-left: 1rem; }
+    .code-pill {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: .76rem; background: rgba(0,0,0,0.06); color: #222;
+      border-radius: 4px; padding: .08rem .32rem; white-space: nowrap;
+    }
 
     /* CFP */
     .topic-list { list-style: none; padding: 0; margin-top: .8rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: .5rem; }
@@ -415,25 +436,55 @@
     <div class="section-divider"></div>
     <div class="info-box" style="margin-bottom:1.2rem;">
       <p>
-        The workshop challenge is centered around the <a href="./index.html" style="color:#E87461; font-weight:600;">Hoi! dataset</a>, the first large-scale benchmark to jointly capture visual, force, and tactile information across human and robot embodiments during articulated object manipulation. It contains <strong>3,048 sequences</strong> spanning <strong>381 articulated objects</strong> across <strong>38 indoor environments</strong>, recorded under four embodiments. The challenge evaluates how well methods leverage cross-view and multimodal signals to understand and predict articulated manipulation.
+        The workshop challenge is centered around the <a href="./index.html" style="color:#E87461; font-weight:600;">Hoi! dataset</a> and evaluates two concrete tasks on prepared egocentric interaction clips. Both tracks use the same evaluation split: <strong>40 object interactions</strong> from <strong>kitchen_9</strong> and <strong>kitchen_16</strong>, organized as sequence IDs such as <span class="code-pill">kitchen_9_obj1</span>. RGB clips and public metadata are provided to participants; hidden ground truth is kept on Codabench.
       </p>
+    </div>
+
+    <div class="challenge-actions">
+      <a class="btn btn-primary" href="https://drive.google.com/drive/folders/1ComztQORvvmHgPpnxQJ95pAp5All7yBP?usp=drive_link" target="_blank" rel="noopener">
+        <i class="fab fa-google-drive"></i> Prepared Split
+      </a>
+      <a class="btn btn-dark" href="https://www.codabench.org/" target="_blank" rel="noopener">
+        <i class="fas fa-trophy"></i> Codabench
+      </a>
     </div>
 
     <div class="track-grid">
       <div class="track-card">
-        <h4><i class="fas fa-sync-alt" style="margin-right:.4rem;"></i>T1 — Cross-View Articulation Estimation</h4>
-        <p>Participants develop methods to estimate the parameters governing the manipulation action of an articulated object part across embodiment viewpoints (e.g., third-person to egocentric, human to robot). Models may use any combination of provided visual streams.</p>
+        <h4><i class="fas fa-sync-alt" style="margin-right:.4rem;"></i>T1 — Articulation Estimation</h4>
+        <p>Given short head-mounted RGB clips of a human hand interacting with furniture, predict the articulation model for each interacted object.</p>
         <ul>
-          <li><strong>Method Input:</strong> Any Hoi! video stream, excluding depth or poses.</li>
-          <li><strong>Target Metric:</strong> Revolute/Prismatic classification, Motion Axis estimation, Articulation Limits estimation (increasing difficulty).</li>
+          <li><strong>Input:</strong> Per-sequence RGB frames and camera intrinsics.</li>
+          <li><strong>Level 1:</strong> Joint <span class="code-pill">type</span> classification — <span class="code-pill">revolute</span> or <span class="code-pill">prismatic</span> (type accuracy).</li>
+          <li><strong>Level 2:</strong> Joint <span class="code-pill">axis</span> direction estimation, in the first RGB camera frame: x right, y down, z forward (mean / median axis angle error, sign-invariant).</li>
         </ul>
       </div>
       <div class="track-card">
-        <h4><i class="fas fa-hand-rock" style="margin-right:.4rem;"></i>T2 — Force Estimation</h4>
-        <p>Participants develop methods to estimate contact forces from video alone. This track targets the underexplored problem of physical interaction understanding from vision.</p>
+        <h4><i class="fas fa-hand-rock" style="margin-right:.4rem;"></i>T2 — Force Prediction</h4>
+        <p>Given egocentric RGB clips from the gripper recording, predict scalar interaction force targets derived from the synchronized force/torque sensor.</p>
         <ul>
-          <li><strong>Method Input:</strong> Egocentric Interaction Video.</li>
-          <li><strong>Target Metric:</strong> RMSE of the estimated interaction force during the demonstrated interaction.</li>
+          <li><strong>Input:</strong> Head-mounted <span class="code-pill">aria_human</span> RGB clips from the gripper modality.</li>
+          <li><strong>Level 1:</strong> Peak resultant contact force <span class="code-pill">max_force_n</span> in Newtons.</li>
+          <li><strong>Level 2:</strong> Contact-gated mechanical work <span class="code-pill">work_j</span> in Joules.</li>
+          <li><strong>Metrics:</strong> MAE, median AE, RMSE, and mean relative error. Lower is better.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="challenge-note-grid">
+      <div class="challenge-note">
+        <h4><i class="fas fa-database"></i> Evaluation Split</h4>
+        <p>The prepared split contains four subsets: <span class="code-pill">kitchen_9</span> objects 1-7 and 8-14, plus <span class="code-pill">kitchen_16</span> objects 1-8 and 9-27. Only the first interaction window per object is evaluated.</p>
+      </div>
+      <div class="challenge-note">
+        <h4><i class="fas fa-file-archive"></i> Submission File</h4>
+        <p>Upload a zip containing a single root-level file named exactly <span class="code-pill">predictions.json</span>. Do not place it inside a parent folder, and do not name it <span class="code-pill">ground_truth.json</span>.</p>
+      </div>
+      <div class="challenge-note">
+        <h4><i class="fas fa-code"></i> JSON Keys</h4>
+        <ul>
+          <li>T1: <span class="code-pill">{ "type": "...", "axis": [x, y, z] }</span></li>
+          <li>T2: <span class="code-pill">{ "max_force_n": n, "work_j": j }</span></li>
         </ul>
       </div>
     </div>
