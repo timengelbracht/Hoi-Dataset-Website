@@ -313,3 +313,46 @@ All CSV files:
 - Multiple Leica scans per location allow capturing both articulated and unarticulated states.
 
 **TODO:** Provide data loader
+
+---
+
+## FAQ
+
+### UMI Gripper — SLAM pipeline and IMU usage
+
+The UMI SLAM pipeline is **monocular ORB-SLAM** followed by a **GTSAM pose-graph alignment** to hloc PnP anchors. All inputs and outputs of that alignment are in the OpenCV camera frame. The IMU is **not** used to express poses; the `T_cam_imu` entry in `calib/calib_pinhole-equi/*-imucam.yaml` is shipped only as calibration metadata.
+
+ORB-SLAM is known to be brittle during interaction sequences (a well-known limitation of the original UMI design). We compensate with the global alignment to hloc anchors. The Aria SLAM used on the Hoi! gripper is significantly more robust, which is why an Aria was added there; the UMI gripper does not carry an Aria.
+
+### UMI Gripper — TCP definition and `T_cam0_tool`
+
+The UMI gripper does not have a formally defined TCP. We report **camera poses only** (`cam0` = the GoPro). For users who need a tool-center-point transform, we provide the following measured transform:
+
+```yaml
+# UMI gripper TCP definition, analogous to the HOI gripper's T_i_tool.
+# Reference frame is cam0 (the GoPro), since UMI has no force-torque IMU.
+#
+# Convention: cam0 frame is OpenCV optical (X=right, Y=down, Z=forward).
+# T_cam0_tool maps a point in the TCP frame -> cam0 frame (tool -> camera),
+# exactly like T_i_tool maps tool -> imu for the HOI gripper.
+#
+# Anchor: ArUco DICT_4X4_50 ids {0,1} centers, measured by PnP over 271 frames:
+#   midpoint (X, Y, Z) = (0.000, 0.0568, 0.0691) m   [X=0 by L/R symmetry]
+# The TCP is pushed forward of the tag plane along +Z to reach the fingertips.
+cam0:
+  # rotation = identity: TCP axes parallel to camera
+  #   X = gripper opening/closing direction (the axis the tags slide along)
+  #   Y = down,  Z = approach / forward (toward the grasped object)
+  # translation:
+  #   x = 0.0     -> centered between the two fingers
+  #   y = 0.0568  -> tag vertical level (below the optical axis)
+  #   z = 0.10    -> forward; TUNE to your finger length (tags are at 0.0691 m,
+  #                  fingertips extend a few cm beyond; total orange finger length ~12 cm)
+  T_cam0_tool:
+  - [1.0, 0.0, 0.0, 0.0000]
+  - [0.0, 1.0, 0.0, 0.0568]
+  - [0.0, 0.0, 1.0, 0.1500]
+  - [0.0, 0.0, 0.0, 1.0000]
+```
+
+The Z translation (`0.15 m`) is a reasonable starting point; tune it to match your actual finger length.
