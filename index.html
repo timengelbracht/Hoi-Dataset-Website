@@ -126,7 +126,7 @@
         <a href="https://drive.google.com/drive/folders/1Hzpt5WXFbUg0CNVU7gudH-4z-HkC6kGR" target="_blank" rel="noopener" class="btn btn-primary">
           <i class="fas fa-folder-open"></i> Example Data
         </a>
-        <a href="#" class="btn btn-disabled" onclick="return false"><i class="fas fa-cube"></i> CAD Files — Soon</a>
+        <a href="https://cad.onshape.com/documents/dc91a5a5cfe581b27b9c6529/w/63ef07cd39ef2d867c32db1c/e/ede9e087bd1c9f0df0677e18" target="_blank" rel="noopener" class="btn btn-primary"><i class="fas fa-cube"></i> CAD Model</a>
       </div>
     </div>
   </section>
@@ -215,7 +215,7 @@
           <li><i class="fas fa-hand-paper"></i> <strong>Tactile Sensing</strong> — DIGIT sensor for contact texture and pressure</li>
           <li><i class="fas fa-camera"></i> <strong>Stereo Camera</strong> — manipulation-centric stereo camera aligned with interaction</li>
         </ul>
-        <a href="#" class="btn btn-disabled" onclick="return false" style="margin-top:1.2rem; display:inline-flex;"><i class="fas fa-cube"></i> CAD Files — Soon</a>
+        <a href="https://cad.onshape.com/documents/dc91a5a5cfe581b27b9c6529/w/63ef07cd39ef2d867c32db1c/e/ede9e087bd1c9f0df0677e18" target="_blank" class="btn" style="margin-top:1.2rem; display:inline-flex;"><i class="fas fa-cube"></i> Open CAD in Onshape</a>
       </div>
       <div class="gripper-viewer-wrap">
         <canvas id="gripper-canvas"></canvas>
@@ -753,60 +753,64 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.m
 import { STLLoader } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/STLLoader.js';
 import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js';
 
-const canvas = document.getElementById('gripper-canvas');
-const W = canvas.offsetWidth || 440;
-const H = canvas.offsetHeight || 340;
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-renderer.setSize(W, H, false);
+const gripperCanvas = document.getElementById('gripper-canvas');
+const gripperRenderer = new THREE.WebGLRenderer({ canvas: gripperCanvas, antialias: true, alpha: true });
+gripperRenderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(45, W / H, 0.1, 1000);
-camera.position.set(0, 0, 3);
+const gripperScene = new THREE.Scene();
+const gripperCamera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
+gripperCamera.position.set(0, 0, 3);
 
-scene.add(new THREE.AmbientLight(0xffffff, 0.6));
-const dir = new THREE.DirectionalLight(0xffffff, 1.2);
-dir.position.set(2, 4, 3);
-scene.add(dir);
-const fill = new THREE.DirectionalLight(0xE87461, 0.3);
-fill.position.set(-3, -2, -2);
-scene.add(fill);
+gripperScene.add(new THREE.AmbientLight(0xffffff, 0.6));
+const gripperKeyLight = new THREE.DirectionalLight(0xffffff, 1.2);
+gripperKeyLight.position.set(2, 4, 3);
+gripperScene.add(gripperKeyLight);
+const gripperFillLight = new THREE.DirectionalLight(0xE87461, 0.3);
+gripperFillLight.position.set(-3, -2, -2);
+gripperScene.add(gripperFillLight);
 
-const controls = new OrbitControls(camera, canvas);
-controls.enableDamping = true;
-controls.dampingFactor = 0.08;
-controls.autoRotate = true;
-controls.autoRotateSpeed = 1.2;
+const gripperControls = new OrbitControls(gripperCamera, gripperCanvas);
+gripperControls.enableDamping = true;
+gripperControls.dampingFactor = 0.08;
+gripperControls.autoRotate = true;
+gripperControls.autoRotateSpeed = 1.2;
 
 new STLLoader().load('./static/gripper_full.stl', geo => {
   geo.computeVertexNormals();
   geo.center();
   const box = new THREE.Box3().setFromBufferAttribute(geo.attributes.position);
   const size = box.getSize(new THREE.Vector3()).length();
-  camera.position.setLength(size * 1.5);
-  controls.minDistance = size * 0.5;
-  controls.maxDistance = size * 5;
+  gripperCamera.position.setLength(size * 1.5);
+  gripperControls.minDistance = size * 0.5;
+  gripperControls.maxDistance = size * 5;
 
   const mesh = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({
-    color: 0xcccccc, metalness: 0.3, roughness: 0.55
+    color: 0xcccccc,
+    metalness: 0.3,
+    roughness: 0.55
   }));
-  scene.add(mesh);
+  gripperScene.add(mesh);
 });
 
-const ro = new ResizeObserver(() => {
-  const w = canvas.offsetWidth, h = canvas.offsetHeight;
+const resizeGripperViewer = () => {
+  const w = gripperCanvas.clientWidth;
+  const h = gripperCanvas.clientHeight;
   if (!w || !h) return;
-  renderer.setSize(w, h, false);
-  camera.aspect = w / h;
-  camera.updateProjectionMatrix();
-});
-ro.observe(canvas);
+  gripperRenderer.setSize(w, h, false);
+  gripperCamera.aspect = w / h;
+  gripperCamera.updateProjectionMatrix();
+};
 
-(function animate() {
-  requestAnimationFrame(animate);
-  controls.update();
-  renderer.render(scene, camera);
+const gripperResizeObserver = new ResizeObserver(resizeGripperViewer);
+gripperResizeObserver.observe(gripperCanvas);
+resizeGripperViewer();
+
+(function animateGripper() {
+  requestAnimationFrame(animateGripper);
+  gripperControls.update();
+  gripperRenderer.render(gripperScene, gripperCamera);
 })();
 </script>
+
 </body>
 </html>

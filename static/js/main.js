@@ -36,7 +36,7 @@
   const docsEl = document.getElementById('docs-content');
   if (!docsEl) return;
 
-  fetch('./wiki.md')
+  fetch(`./wiki.md?v=${Date.now()}`, { cache: 'no-store' })
     .then(r => {
       if (!r.ok) throw new Error(r.statusText);
       return r.text();
