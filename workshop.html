@@ -464,12 +464,22 @@
         <p>Given egocentric RGB clips from the gripper recording, predict scalar interaction force targets derived from the synchronized force/torque sensor.</p>
         <ul>
           <li><strong>Input:</strong> Head-mounted <span class="code-pill">aria_human</span> RGB clips from the gripper modality.</li>
-          <li><strong>Level 1:</strong> Peak resultant contact force <span class="code-pill">max_force_n</span> in Newtons.</li>
-          <li><strong>Level 2:</strong> Contact-gated mechanical work <span class="code-pill">work_j</span> in Joules.</li>
-          <li><strong>Metrics:</strong> MAE, median AE, RMSE, and mean relative error. Lower is better.</li>
+          <li><strong>Level 1:</strong> Peak resultant contact force <span class="code-pill">max_force_n</span> (Newtons) — the maximum of the force magnitude over the interaction.</li>
+          <li><strong>Level 2:</strong> Contact-gated mechanical <strong>work</strong> <span class="code-pill">work_j</span> (Joules) — the energy transferred to the object, <span class="code-pill">W = &#8747; F&middot;v dt</span> over the contact phase: instantaneous power (force &middot; end-effector velocity) integrated over time, i.e. force &times; distance moved along the motion. It rewards getting both <em>how hard</em> and <em>how far</em> right (two interactions can share a peak force but differ in work).</li>
+          <li><strong>Metrics:</strong> MAE (primary), median AE, RMSE, and mean relative error. Lower is better.</li>
         </ul>
       </div>
     </div>
+
+    <figure style="margin:1.6rem auto; text-align:center; max-width:900px;">
+      <img src="./static/images/force_task_explainer.png" alt="Force task: Level 1 peak force and Level 2 work on one interaction's force signal" style="max-width:100%; border-radius:10px; border:1px solid rgba(0,0,0,0.08);">
+      <figcaption style="font-size:.85rem; color:#555; margin-top:.7rem;">
+        <strong>Force task at a glance.</strong>
+        <em>Top — force vs time:</em> three axis components plus the black resultant <span class="code-pill">‖F‖</span>; <strong style="color:#c0392b;">Level 1</strong> predicts the peak resultant force (red ★).
+        <em>Bottom — force along motion vs distance:</em> <strong style="color:#c25b00;">Level 2</strong> predicts the <em>work</em>, the shaded area <span class="code-pill">W = &#8747; F&middot;dx</span> (force &times; distance moved along the motion, in Joules).
+        Only the contact phase is scored. The x-axes make the distinction explicit: the area under force-vs-<em>time</em> would be impulse (N·s) — work is the area under force-vs-<em>distance</em>.
+      </figcaption>
+    </figure>
 
     <div class="challenge-note-grid">
       <div class="challenge-note">
