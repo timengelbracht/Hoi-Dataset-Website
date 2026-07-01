@@ -155,6 +155,9 @@
       font-size: .76rem; background: rgba(0,0,0,0.06); color: #222;
       border-radius: 4px; padding: .08rem .32rem; white-space: nowrap;
     }
+    .challenge-figure { margin:1.6rem auto; text-align:center; max-width:900px; }
+    .challenge-figure img { max-width:100%; border-radius:10px; border:1px solid rgba(0,0,0,0.08); background:#fff; }
+    .challenge-figure figcaption { font-size:.85rem; color:#555; margin-top:.7rem; line-height:1.65; }
 
     /* CFP */
     .topic-list { list-style: none; padding: 0; margin-top: .8rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: .5rem; }
@@ -444,8 +447,11 @@
       <a class="btn btn-primary" href="https://drive.google.com/drive/folders/1ComztQORvvmHgPpnxQJ95pAp5All7yBP?usp=drive_link" target="_blank" rel="noopener">
         <i class="fab fa-google-drive"></i> Prepared Split
       </a>
-      <a class="btn btn-dark" href="https://www.codabench.org/" target="_blank" rel="noopener">
-        <i class="fas fa-trophy"></i> Codabench
+      <a class="btn btn-dark" href="https://www.codabench.org/competitions/17336/" target="_blank" rel="noopener">
+        <i class="fas fa-sync-alt"></i> T1 Articulation
+      </a>
+      <a class="btn btn-dark" href="https://www.codabench.org/competitions/17335/" target="_blank" rel="noopener">
+        <i class="fas fa-hand-rock"></i> T2 Force
       </a>
     </div>
 
@@ -471,9 +477,18 @@
       </div>
     </div>
 
-    <figure style="margin:1.6rem auto; text-align:center; max-width:900px;">
-      <img src="./static/images/force_task_explainer.png" alt="Force task: Level 1 peak force and Level 2 work on one interaction's force signal" style="max-width:100%; border-radius:10px; border:1px solid rgba(0,0,0,0.08);">
-      <figcaption style="font-size:.85rem; color:#555; margin-top:.7rem;">
+    <figure class="challenge-figure">
+      <img src="./static/images/articulation_task_explainer.png" alt="Articulation task: Level 1 joint type classification and Level 2 axis direction estimation">
+      <figcaption>
+        <strong>Articulation task at a glance.</strong>
+        The helper uses the same debug-visual style as the challenge diagnostics: an egocentric RGB frame with a highlighted candidate joint axis.
+        <strong style="color:#c0392b;">Level 1</strong> predicts the joint type (<span class="code-pill">revolute</span> or <span class="code-pill">prismatic</span>), while <strong style="color:#c25b00;">Level 2</strong> predicts the 3D axis direction <span class="code-pill">[x, y, z]</span> in the first RGB camera frame. No object ID, numeric GT axis, or object-specific type label is shown.
+      </figcaption>
+    </figure>
+
+    <figure class="challenge-figure">
+      <img src="./static/images/force_task_explainer.png" alt="Force task: Level 1 peak force and Level 2 work on one interaction's force signal">
+      <figcaption>
         <strong>Force task at a glance.</strong>
         <em>Top — force vs time:</em> three axis components plus the black resultant <span class="code-pill">‖F‖</span>; <strong style="color:#c0392b;">Level 1</strong> predicts the peak resultant force (red ★).
         <em>Bottom — force along motion vs distance:</em> <strong style="color:#c25b00;">Level 2</strong> predicts the <em>work</em>, the shaded area <span class="code-pill">W = &#8747; F&middot;dx</span> (force &times; distance moved along the motion, in Joules).
