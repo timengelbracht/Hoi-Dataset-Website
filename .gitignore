@@ -1,2 +1,3 @@
 template_index.html
-/static/videos/
+/static/videos/*
+!/static/videos/hoi_recording_procedure_low.mp4
