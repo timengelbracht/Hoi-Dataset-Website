@@ -21,15 +21,23 @@
   <style>
     /* Workshop-specific styles */
     .ws-hero {
-      background: linear-gradient(135deg, #0a0a12 0%, #1a1a2e 60%, #16213e 100%);
+      background: #0a0a12;
       min-height: 52vh;
       display: flex; align-items: center; justify-content: center;
       text-align: center; padding: 4rem 2rem;
       position: relative; overflow: hidden;
     }
+    .ws-hero-video {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      object-fit: cover; opacity: .5; filter: blur(4px);
+      transform: scale(1.05);
+      pointer-events: none;
+    }
     .ws-hero::before {
       content: ''; position: absolute; inset: 0;
-      background: radial-gradient(ellipse at 60% 40%, rgba(232,116,97,0.12) 0%, transparent 65%);
+      background:
+        radial-gradient(ellipse at 60% 40%, rgba(232,116,97,0.12) 0%, transparent 65%),
+        linear-gradient(135deg, rgba(10,10,18,0.82) 0%, rgba(20,20,30,0.72) 60%, rgba(10,15,25,0.82) 100%);
       pointer-events: none;
     }
     .ws-hero-content { position: relative; z-index: 1; max-width: 800px; }
@@ -245,6 +253,9 @@
 
   <!-- HERO -->
   <section class="ws-hero" id="ws-hero">
+    <video class="ws-hero-video" autoplay muted loop playsinline poster="./static/images/TextHoi.png">
+      <source src="./static/videos/hoi_header.mp4" type="video/mp4">
+    </video>
     <div class="ws-hero-content">
       <div class="ws-badge"><i class="fas fa-star" style="margin-right:.4rem"></i>ECCV 2026 Workshop</div>
       <h1>Force-Grounded, <span class="accent">Cross-View</span><br>Articulated Manipulation</h1>
@@ -447,10 +458,10 @@
       <a class="btn btn-primary" href="https://drive.google.com/drive/folders/1ComztQORvvmHgPpnxQJ95pAp5All7yBP?usp=drive_link" target="_blank" rel="noopener">
         <i class="fab fa-google-drive"></i> Prepared Split
       </a>
-      <a class="btn btn-dark" href="https://www.codabench.org/competitions/17336/" target="_blank" rel="noopener">
+      <a class="btn btn-primary" href="https://www.codabench.org/competitions/17342/" target="_blank" rel="noopener">
         <i class="fas fa-sync-alt"></i> T1 Articulation
       </a>
-      <a class="btn btn-dark" href="https://www.codabench.org/competitions/17335/" target="_blank" rel="noopener">
+      <a class="btn btn-primary" href="https://www.codabench.org/competitions/17335/" target="_blank" rel="noopener">
         <i class="fas fa-hand-rock"></i> T2 Force
       </a>
     </div>

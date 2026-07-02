@@ -1,3 +1,5 @@
 template_index.html
 /static/videos/*
 !/static/videos/hoi_recording_procedure_low.mp4
+!/static/videos/hoi_header.mp4
+.vscode
