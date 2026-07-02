@@ -492,8 +492,8 @@
       <img src="./static/images/articulation_task_explainer.png" alt="Articulation task: Level 1 joint type classification and Level 2 axis direction estimation">
       <figcaption>
         <strong>Articulation task at a glance.</strong>
-        The helper uses the same debug-visual style as the challenge diagnostics: an egocentric RGB frame with a highlighted candidate joint axis.
-        <strong style="color:#c0392b;">Level 1</strong> predicts the joint type (<span class="code-pill">revolute</span> or <span class="code-pill">prismatic</span>), while <strong style="color:#c25b00;">Level 2</strong> predicts the 3D axis direction <span class="code-pill">[x, y, z]</span> in the first RGB camera frame. No object ID, numeric GT axis, or object-specific type label is shown.
+        Two egocentric examples — a <strong style="color:#c0392b;">revolute</strong> joint (a door that rotates about its axis) and a <strong style="color:#2a6fe0;">prismatic</strong> joint (a drawer that slides along its axis) — each with the joint axis drawn on the frame.
+        <strong>Level 1</strong> predicts the joint type (<span class="code-pill">revolute</span> or <span class="code-pill">prismatic</span>); <strong>Level 2</strong> predicts the 3-D axis direction <span class="code-pill">[x, y, z]</span> in the first RGB camera frame. (Shown on a non-evaluation scene, so no challenge ground truth is revealed.)
       </figcaption>
     </figure>
 
