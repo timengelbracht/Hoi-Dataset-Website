@@ -108,7 +108,7 @@ The following coordinate frames are commonly used throughout the dataset:
 ## Interaction Splitting
 
 - Inside interaction_splitting_info_<interaction indices>.json the automatic splits (time windows) are stored
-- Inside interaction_splitting_info_<interaction indices>_confirmed.json manually checked and with object index annoted windows are stored
+- Inside interaction_splitting_info_<interaction indices>_confirmed.json manually checked and with object index and open/close labels annoted windows are stored
 
 ---
 
