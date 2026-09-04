@@ -90,6 +90,7 @@
       background: rgba(255,255,255,0.02); border: 1px solid rgba(0,0,0,0.07);
       border-radius: 12px; padding: 1.2rem; transition: border-color .3s;
     }
+    a.speaker-card { display: block; text-decoration: none; color: inherit; }
     .speaker-card:hover { border-color: rgba(232,116,97,0.3); }
     .speaker-top { display: flex; align-items: center; gap: .9rem; margin-bottom: .8rem; }
     .speaker-avatar {
@@ -406,41 +407,51 @@
   <section class="section" id="ws-speakers">
     <h2 class="section-title">Invited <span class="accent">Speakers</span></h2>
     <div class="section-divider"></div>
-    <p style="font-size:.88rem; color:#555; margin-bottom:1rem;">Speakers will be announced soon.</p>
-
     <div class="speaker-grid">
-      <div class="speaker-card" style="opacity:.6;">
+      <a href="https://www.cs.utexas.edu/~grauman/" target="_blank" rel="noopener" class="speaker-card">
         <div class="speaker-top">
-          <div class="speaker-avatar"><i class="fas fa-user"></i></div>
+          <div class="speaker-avatar"><img src="./static/images/KristenGrauman.jpg" alt="Kristen Grauman" loading="lazy" onerror="this.outerHTML='<i class=\'fas fa-user\'></i>'"></div>
           <div>
-            <div class="speaker-name" style="color:#E87461; font-style:italic;">Stay Tuned</div>
+            <div class="speaker-name">Kristen Grauman</div>
+            <div class="speaker-affil">UT Austin &amp; FAIR, Meta</div>
+            <span class="confirmed-badge">Confirmed</span>
           </div>
         </div>
-      </div>
-      <div class="speaker-card" style="opacity:.6;">
+        <div class="speaker-bio">Professor at UT Austin and Research Director at FAIR. Her work on egocentric video understanding underpins Ego4D and Ego-Exo4D.</div>
+      </a>
+      <a href="https://people.csail.mit.edu/pulkitag/" target="_blank" rel="noopener" class="speaker-card">
         <div class="speaker-top">
-          <div class="speaker-avatar"><i class="fas fa-user"></i></div>
+          <div class="speaker-avatar"><img src="./static/images/PulkitAgrawal.jpg" alt="Pulkit Agrawal" loading="lazy" onerror="this.outerHTML='<i class=\'fas fa-user\'></i>'"></div>
           <div>
-            <div class="speaker-name" style="color:#E87461; font-style:italic;">Stay Tuned</div>
+            <div class="speaker-name">Pulkit Agrawal</div>
+            <div class="speaker-affil">MIT CSAIL</div>
+            <span class="confirmed-badge">Confirmed</span>
           </div>
         </div>
-      </div>
-      <div class="speaker-card" style="opacity:.6;">
+        <div class="speaker-bio">Assistant Professor at MIT, leading the Improbable AI Lab on reinforcement learning and dexterous robotic manipulation.</div>
+      </a>
+      <a href="https://dimadamen.github.io/" target="_blank" rel="noopener" class="speaker-card">
         <div class="speaker-top">
-          <div class="speaker-avatar"><i class="fas fa-user"></i></div>
+          <div class="speaker-avatar"><img src="./static/images/DimaDamen.jpg" alt="Dima Damen" loading="lazy" onerror="this.outerHTML='<i class=\'fas fa-user\'></i>'"></div>
           <div>
-            <div class="speaker-name" style="color:#E87461; font-style:italic;">Stay Tuned</div>
+            <div class="speaker-name">Dima Damen</div>
+            <div class="speaker-affil">U. Bristol &amp; Google DeepMind</div>
+            <span class="confirmed-badge">Confirmed</span>
           </div>
         </div>
-      </div>
-      <div class="speaker-card" style="opacity:.6;">
+        <div class="speaker-bio">Professor of Computer Vision at Bristol and Senior Research Scientist at Google DeepMind, lead of the EPIC-KITCHENS benchmarks.</div>
+      </a>
+      <a href="https://jakobengel.github.io/" target="_blank" rel="noopener" class="speaker-card">
         <div class="speaker-top">
-          <div class="speaker-avatar"><i class="fas fa-user"></i></div>
+          <div class="speaker-avatar"><img src="./static/images/JacobEngel.jpeg" alt="Jakob Engel" loading="lazy" onerror="this.outerHTML='<i class=\'fas fa-user\'></i>'"></div>
           <div>
-            <div class="speaker-name" style="color:#E87461; font-style:italic;">Stay Tuned</div>
+            <div class="speaker-name">Jakob Engel</div>
+            <div class="speaker-affil">Meta</div>
+            <span class="confirmed-badge">Confirmed</span>
           </div>
         </div>
-      </div>
+        <div class="speaker-bio">Research Director at Meta and lead of Project Aria, working on SLAM and egocentric machine perception.</div>
+      </a>
     </div>
   </section>
 
@@ -553,7 +564,7 @@
         <div class="schedule-time">14:10 – 14:45</div>
         <div>
           <div class="schedule-event">Keynote 1<span class="schedule-tag stag-keynote">Keynote</span></div>
-          <div class="schedule-desc">Speaker TBD</div>
+          <div class="schedule-desc">Kristen Grauman</div>
         </div>
       </div>
       <div class="schedule-row">
@@ -574,21 +585,21 @@
         <div class="schedule-time">16:00 – 16:35</div>
         <div>
           <div class="schedule-event">Keynote 2<span class="schedule-tag stag-keynote">Keynote</span></div>
-          <div class="schedule-desc">Speaker TBD</div>
+          <div class="schedule-desc">Pulkit Agrawal</div>
         </div>
       </div>
       <div class="schedule-row">
         <div class="schedule-time">16:35 – 17:10</div>
         <div>
           <div class="schedule-event">Keynote 3<span class="schedule-tag stag-keynote">Keynote</span></div>
-          <div class="schedule-desc">Speaker TBD</div>
+          <div class="schedule-desc">Dima Damen</div>
         </div>
       </div>
       <div class="schedule-row">
         <div class="schedule-time">17:10 – 17:45</div>
         <div>
           <div class="schedule-event">Keynote 4<span class="schedule-tag stag-keynote">Keynote</span></div>
-          <div class="schedule-desc">Speaker TBD</div>
+          <div class="schedule-desc">Jakob Engel</div>
         </div>
       </div>
       <div class="schedule-row">
