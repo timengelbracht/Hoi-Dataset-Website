@@ -327,6 +327,7 @@ a:hover { color: #1e40af; }
   .sidebar.open { transform: translateX(0); }
   .sidebar-toggle { display: flex; align-items: center; justify-content: center; }
   .main, .footer { margin-left: 0; }
+  .main { width: 100%; }
   .hero-content h1 { font-size: 1.7rem; }
   .hero-logo img { height: 55px; }
   .stat-num { font-size: 1.8rem; }
